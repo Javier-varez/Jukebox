@@ -47,23 +47,7 @@ namespace ATE::Device
 
 	char KeyPadAnalog::PerformReading(KeyPadRow row)
 	{
-		ADC_Dev::Channel ch;
-		switch (row)
-		{
-		case Row_First:
-			ch = ADC_Dev::Channel_14;
-			break;
-		case Row_Second:
-			ch = ADC_Dev::Channel_15;
-			break;
-		case Row_Numeric:
-			ch = ADC_Dev::Channel_8;
-			break;
-		default:
-			ch = ADC_Dev::Channel_14;
-			break;
-		}
-		auto res = adc.PerformMeasurement(ch);
+		auto res = adc.PerformMeasurement();
 
 		if (std::get<1>(res))
 		{
@@ -105,16 +89,14 @@ namespace ATE::Device
 
 	bool KeyPadAnalog::Run()
 	{
-		char c;
+		for (std::uint32_t i = static_cast<std::uint32_t>(Row_First);
+				i < static_cast<std::uint32_t>(N_ROWS); i++)
+		{
+			KeyPadRow row = static_cast<KeyPadRow>(i);
 
-		c = PerformReading(Row_First);
-		UpdateRowState(Row_First, c);
-
-		c = PerformReading(Row_Second);
-		UpdateRowState(Row_Second, c);
-
-		c = PerformReading(Row_Numeric);
-		UpdateRowState(Row_Numeric, c);
+			char c = PerformReading(row);
+			UpdateRowState(row, c);
+		}
 
 		Task::Delay(10);
 

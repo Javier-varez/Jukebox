@@ -53,15 +53,15 @@ namespace ATE::Device
 		static ADC_Dev& GetDevice(Source);
 
 		bool SelectChannel(ADC_Dev::Channel ch);
-		bool StartConversion();
 		std::uint32_t GetResolution();
-		std::tuple<std::uint32_t, bool> PerformMeasurement(Channel ch);
+		std::tuple<std::uint32_t, bool> PerformMeasurement();
 
 	private:
 		ADC_HandleTypeDef *hadc;
 		OSAL::Semaphore conversionSemaphore;
 
 		ADC_Dev(Source);
+		bool StartConversion();
 
 		friend void ::HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 	};

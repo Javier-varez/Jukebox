@@ -13,7 +13,7 @@
 
 namespace ATE::OSAL
 {
-	Semaphore::Semaphore()
+	Semaphore::Semaphore(std::uint32_t max_count)
 	{
 		const osSemaphoreAttr_t attr =
 		{
@@ -22,7 +22,7 @@ namespace ATE::OSAL
 			cb_mem : 0,
 			cb_size : 0
 		};
-		impl = osSemaphoreNew(1, 0, &attr);
+		impl = osSemaphoreNew(max_count, 0, &attr);
 	}
 
 	Semaphore::~Semaphore()

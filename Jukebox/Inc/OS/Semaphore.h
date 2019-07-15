@@ -20,7 +20,7 @@ namespace ATE::OSAL
 	class Semaphore
 	{
 	public:
-		Semaphore();
+		Semaphore(std::uint32_t max_count = 1);
 		~Semaphore();
 		void Take(std::uint32_t timeout = 0);
 		void Give();
