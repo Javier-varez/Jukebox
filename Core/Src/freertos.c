@@ -93,7 +93,7 @@ osKernelInitialize(); // Initialize CMSIS-RTOS
   const osThreadAttr_t defaultTask_attributes = {
     .name = "defaultTask",
     .priority = (osPriority_t) osPriorityNormal,
-    .stack_size = 512
+    .stack_size = 128
   };
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 

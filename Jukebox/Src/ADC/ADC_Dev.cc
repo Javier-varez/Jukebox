@@ -11,6 +11,7 @@
 
 #include <ADC/ADC_Dev.h>
 #include "Logger/Logger.h"
+#include "OS/Task.h"
 
 extern "C"
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
@@ -74,12 +75,13 @@ namespace ATE::Device
 
 	bool ADC_Dev::StartConversion()
 	{
-		if (HAL_ADC_Start_IT(hadc) != HAL_OK)
+		if (HAL_ADC_Start(hadc) != HAL_OK)
 		{
 			ATE::Logger &logger = ATE::Logger::GetLogger();
 			logger.Log(ATE::Logger::LogLevel_ERROR, "%s: Couldn't start conversion", __func__);
 			return false;
 		}
+		HAL_ADC_PollForConversion(hadc, 10);
 		return true;
 
 	}
@@ -87,13 +89,17 @@ namespace ATE::Device
 	std::tuple<std::uint32_t, bool> ADC_Dev::PerformMeasurement(ADC_Dev::Channel ch)
 	{
 		std::uint32_t value = 0;
+
 		if (!SelectChannel(ch))
+		{
 			goto fail;
-
+		}
 		if (!StartConversion())
+		{
 			goto fail;
+		}
 
-		conversionSemaphore.Take();
+		//conversionSemaphore.Take();
 
 		value = HAL_ADC_GetValue(hadc);
 		return std::make_tuple(value, true);

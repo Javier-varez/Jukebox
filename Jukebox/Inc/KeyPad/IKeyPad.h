@@ -22,9 +22,9 @@ namespace ATE::Device
 	public:
 		enum KeyState
 		{
-			KEY_RELEASED = 0,
+			KEY_EVENT_NONE = 0,
+			KEY_RELEASED,
 			KEY_PRESSED,
-			KEY_REPEAT
 		};
 
 		using KeyChangedCallback = std::function<bool(char key, KeyState state)>;
