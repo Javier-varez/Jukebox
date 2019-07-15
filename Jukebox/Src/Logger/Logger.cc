@@ -30,7 +30,7 @@ namespace ATE
 	}
 
 	Logger::Logger() :
-		Task(TASK_NAME, osPriorityHigh, 512),
+		Task(TASK_NAME, osPriorityHigh, 1024),
 		level(LogLevel_DEBUG),
 		queue(MAX_QUEUE_LENGTH)
 	{

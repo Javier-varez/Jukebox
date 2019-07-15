@@ -1,28 +1,22 @@
 /*
- * KeyPadAnalog.cc
+ * Jukebox
  *
- *  Created on: Jul 14, 2019
- *      Author: javier
+ * AllThingsEmbedded Jukebox Machine
+ * https://AllThingsEmbedded.net
+ *
+ * File: KeyPadAnalog.cc
+ * Brief: AnalogKeyPad Implementation
+ * Module: Device
  */
-
 #include "KeyPad/KeyPadAnalog.h"
 #include "Logger/Logger.h"
-#include "adc.h"
-
-extern "C"
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
-	std::uint32_t value = HAL_ADC_GetValue(hadc);
-	ATE::Logger &logger = ATE::Logger::GetLogger();
-
-	logger.Log(ATE::Logger::LogLevel_ERROR, "Value %d\r\n", value);
-}
 
 namespace ATE::Device
 {
 	constexpr static char TASK_NAME[] = "cool";
 	KeyPadAnalog::KeyPadAnalog()
-		: Task(TASK_NAME, osPriorityHigh, 400)
+		: Task(TASK_NAME, osPriorityHigh, 1024),
+		  adc(ADC_Dev::GetDevice(ADC_Dev::SOURCE_ADC1))
 	{
 
 	}
@@ -31,22 +25,62 @@ namespace ATE::Device
 	{
 
 	}
-	bool KeyPadAnalog::Run()
+
+	char KeyPadAnalog::VoltageToCharacter(KeyPadRow row, std::uint32_t voltage)
 	{
-		ADC_ChannelConfTypeDef sConfig =
-		{
-			Channel : ADC_CHANNEL_14,
-			Rank : 1,
-			SamplingTime : ADC_SAMPLETIME_480CYCLES,
-			Offset : 0
-		};
+		std::uint32_t volt_step = 4096 / 10;
+		std::uint32_t index = (voltage + volt_step / 2) / volt_step;
 
-		if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-		{
+		if (index == 0) return '\0';
 
+		switch (row)
+		{
+		case Row_First:
+			return 'A' + index - 1;
+		case Row_Second:
+			return 'L' + index - 1;
+		case Row_Numeric:
+			if (index == 10) return '0';
+			else return '0' + index;
+		default:
+			return '\0';
+		}
+	}
+
+	char KeyPadAnalog::PerformReading(KeyPadRow row)
+	{
+		ADC_Dev::Channel ch;
+		switch (row)
+		{
+		case Row_First:
+			ch = ADC_Dev::Channel_14;
+			break;
+		case Row_Second:
+			ch = ADC_Dev::Channel_15;
+			break;
+		case Row_Numeric:
+			ch = ADC_Dev::Channel_8;
+			break;
+		default:
+			ch = ADC_Dev::Channel_14;
+			break;
+		}
+		auto res = adc.PerformMeasurement(ch);
+
+		if (std::get<1>(res))
+		{
+			return VoltageToCharacter(row, std::get<0>(res));
 		}
 
-		HAL_ADC_Start_IT(&hadc1);
+		return '\0';
+	}
+
+	bool KeyPadAnalog::Run()
+	{
+		char c = PerformReading(Row_First);
+
+		if (c != '\0')
+			Notify(c, KEY_PRESSED);
 
 		Task::Delay(1000);
 

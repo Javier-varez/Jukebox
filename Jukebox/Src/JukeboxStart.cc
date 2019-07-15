@@ -29,7 +29,7 @@ namespace ATE::Jukebox
 	{
 	public:
 		JukeboxTask():
-			Task(TASK_NAME, osPriorityRealtime, 1000)
+			Task(TASK_NAME, osPriorityRealtime, 2048)
 		{
 
 		}
@@ -41,9 +41,6 @@ namespace ATE::Jukebox
 		}
 		virtual bool Run() override
 		{
-			ATE::Logger &logger = ATE::Logger::GetLogger();
-			logger.Log(ATE::Logger::LogLevel_ERROR, "It works!!\r\n");
-
 			Delay(1000);
 			return true;
 		}

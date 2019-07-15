@@ -30,7 +30,7 @@ namespace ATE
 		};
 		struct LogMsg
 		{
-			constexpr static std::size_t MAX_LENGTH = 20;
+			constexpr static std::size_t MAX_LENGTH = 100;
 			char msg[MAX_LENGTH];
 		};
 

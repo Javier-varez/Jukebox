@@ -4,7 +4,7 @@
  * AllThingsEmbedded Jukebox Machine
  * https://AllThingsEmbedded.net
  *
- * File: KeyPadAnalog.cc
+ * File: KeyPadAnalog.h
  * Brief: AnalogKeyPad Implementation
  * Module: Device
  */
@@ -14,15 +14,29 @@
 
 #include "KeyPad/IKeyPad.h"
 #include "OS/Task.h"
+#include "ADC/ADC_Dev.h"
+
+#include <cstdint>
 
 namespace ATE::Device
 {
 	class KeyPadAnalog: public OSAL::Task, public  IKeyPad
 	{
 	public:
+		enum KeyPadRow : std::uint32_t
+		{
+			Row_First,
+			Row_Second,
+			Row_Numeric
+		};
+
 		KeyPadAnalog();
+		char VoltageToCharacter(KeyPadRow, std::uint32_t);
+		char PerformReading(KeyPadRow);
 
 	private:
+		ADC_Dev &adc;
+
 		void Init() override;
 		bool Run() override;
 	};
