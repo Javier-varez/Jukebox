@@ -26,7 +26,7 @@
 #include "usbh_msc.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -59,7 +59,6 @@ static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id);
  * -- Insert your external function declaration here --
  */
 /* USER CODE BEGIN 1 */
-
 /* USER CODE END 1 */
 
 /**
@@ -103,14 +102,17 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 
   case HOST_USER_DISCONNECTION:
   Appli_state = APPLICATION_DISCONNECT;
+  HAL_UART_Transmit(&huart2, "Disconnect\r\n", 12, 1000);
   break;
 
   case HOST_USER_CLASS_ACTIVE:
   Appli_state = APPLICATION_READY;
+  HAL_UART_Transmit(&huart2, "Ready\r\n", 7, 1000);
   break;
 
   case HOST_USER_CONNECTION:
   Appli_state = APPLICATION_START;
+  HAL_UART_Transmit(&huart2, "Start\r\n", 7, 1000);
   break;
 
   default:
