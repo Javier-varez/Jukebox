@@ -51,6 +51,11 @@ namespace ATE::OSAL
 			return osMessageQueueGet(impl, &element, nullptr, timeout) == osOK;
 		}
 
+		void RemoveAll()
+		{
+			osMessageQueueReset(impl);
+		}
+
 		~Queue()
 		{
 			osMessageQueueDelete(impl);

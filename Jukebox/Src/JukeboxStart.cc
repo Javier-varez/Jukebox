@@ -17,6 +17,8 @@
 #include "Logger/Logger.h"
 #include "KeyPad/KeyPadFactory.h"
 #include "MassStorageDevice/MassStorageDeviceFactory.h"
+#include "AudioPlayer/AudioPlayerFactory.h"
+#include "AudioPlayer/Decoder/Mp3Decoder.h"
 
 namespace {
 	bool keyStateChanged(char key, ATE::Device::IKeyPad::KeyState state)
@@ -87,6 +89,10 @@ namespace ATE::Jukebox
 			{
 				ATE::Logger::GetLogger().Log(ATE::Logger::LogLevel_DEBUG, "Mount failed\r\n");
 			}
+
+			Audio::IPlayer& player = Audio::PlayerFactory::GetI2SPlayer();
+
+			player.Play(std::make_unique<ATE::Audio::Mp3Decoder>(msd.OpenFile("A1.mp3")));
 
 		}
 		virtual bool Run() override
