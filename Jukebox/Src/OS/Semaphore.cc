@@ -10,6 +10,7 @@
  */
 
 #include "OS/Semaphore.h"
+#include "FreeRTOS.h"
 
 namespace ATE::OSAL
 {
@@ -32,6 +33,7 @@ namespace ATE::OSAL
 
 	void Semaphore::Take(std::uint32_t timeout)
 	{
+		if (timeout == 0) timeout = portMAX_DELAY;
 		osSemaphoreAcquire(impl, timeout);
 	}
 

@@ -68,7 +68,14 @@ int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create the sync object
     int ret;
 
     osSemaphoreDef(SEM);
-    *sobj = osSemaphoreCreate(osSemaphore(SEM), 1);
+    const osSemaphoreAttr_t attr =
+	{
+		.name = NULL,
+		.attr_bits = 0,
+		.cb_mem = NULL,
+		.cb_size = 0
+	};
+    *sobj = osSemaphoreNew(1, 1, &attr);
     ret = (*sobj != NULL);
 
     return ret;
@@ -107,7 +114,7 @@ int ff_req_grant (	/* 1:Got a grant to access the volume, 0:Could not get a gran
 {
   int ret = 0;
 
-  if(osSemaphoreWait(sobj, _FS_TIMEOUT) == osOK)
+  if(osSemaphoreAcquire(sobj, _FS_TIMEOUT) == osOK)
   {
     ret = 1;
   }

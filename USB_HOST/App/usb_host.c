@@ -108,6 +108,7 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
   case HOST_USER_CLASS_ACTIVE:
   Appli_state = APPLICATION_READY;
   HAL_UART_Transmit(&huart2, "Ready\r\n", 7, 1000);
+
   break;
 
   case HOST_USER_CONNECTION:
