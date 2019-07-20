@@ -27,8 +27,8 @@ namespace ATE::Device
 		void Initialize() override;
 		bool Mount() override;
 		bool Unmount() override;
-		std::unique_ptr<IFile> OpenFile(char *path) override;
-		std::unique_ptr<IDirReader> OpenDir(char *path) override;
+		std::unique_ptr<IFile> OpenFile(const char *path) override;
+		std::unique_ptr<IDirReader> OpenDir(const char *path) override;
 
 	private:
 		USBHostMSC();

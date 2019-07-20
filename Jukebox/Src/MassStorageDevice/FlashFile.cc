@@ -33,4 +33,9 @@ namespace ATE::Device
 
 		return actualLength;
 	}
+
+	bool FlashFile::Exists()
+	{
+		return true;
+	}
 }

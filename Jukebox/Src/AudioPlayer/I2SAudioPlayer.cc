@@ -198,18 +198,6 @@ namespace ATE::Audio
 		EventQueue.Push(event, timeout);
 	}
 
-	I2SPlayer::State I2SPlayer::GetState()
-	{
-		OSAL::UniqueLock l(StateMutex);
-		return CurrentState;
-	}
-
-	void I2SPlayer::SetState(State state)
-	{
-		OSAL::UniqueLock l(StateMutex);
-		CurrentState = state;
-	}
-
 	void I2SPlayer::SetShadowDecoder(std::unique_ptr<IDecoder> decoder)
 	{
 		OSAL::UniqueLock l (ShadowDecoderMutex);

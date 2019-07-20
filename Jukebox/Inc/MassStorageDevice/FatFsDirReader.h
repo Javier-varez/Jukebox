@@ -21,7 +21,7 @@ namespace ATE::Device
 	class FatFsDirReader : public IDirReader
 	{
 	public:
-		FatFsDirReader(char *path);
+		FatFsDirReader(const char *path);
 		~FatFsDirReader();
 
 		FileInfo ReadNext() override;

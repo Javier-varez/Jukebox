@@ -22,6 +22,7 @@ namespace ATE::Device
 		FlashFile(const std::uint8_t *data, std::size_t length);
 
 		std::size_t Read(std::uint8_t* buffer, std::size_t length) override;
+		bool Exists() override;
 
 	private:
 		const std::uint8_t *Ptr;

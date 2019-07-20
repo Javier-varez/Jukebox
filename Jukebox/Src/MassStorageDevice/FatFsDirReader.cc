@@ -16,7 +16,7 @@
 
 namespace ATE::Device
 {
-	FatFsDirReader::FatFsDirReader(char *path)
+	FatFsDirReader::FatFsDirReader(const char *path)
 	{
 		if (f_opendir(&directory,  path) != FR_OK)
 		{

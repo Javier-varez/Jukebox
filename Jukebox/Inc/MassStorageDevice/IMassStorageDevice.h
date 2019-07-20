@@ -49,8 +49,8 @@ namespace ATE::Device
 		virtual bool Mount() = 0;
 		virtual bool Unmount() = 0;
 
-		virtual std::unique_ptr<IFile> OpenFile(char *path) = 0;
-		virtual std::unique_ptr<IDirReader> OpenDir(char *path) = 0;
+		virtual std::unique_ptr<IFile> OpenFile(const char *path) = 0;
+		virtual std::unique_ptr<IDirReader> OpenDir(const char *path) = 0;
 
 		virtual ~IMassStorageDevice() = default;
 

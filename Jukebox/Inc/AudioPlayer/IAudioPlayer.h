@@ -5,7 +5,7 @@
  * https://AllThingsEmbedded.net
  *
  * File: IAudioPlayer.h
- * Brief: Audio Player
+ * Brief: Audio Player Interface
  * Module: Audio
  */
 
@@ -27,22 +27,18 @@ namespace ATE::Audio
 	class IPlayer
 	{
 	public:
-		enum Event
+		enum State
 		{
-			Event_None = 0,
-			Event_Playing,
-			Event_Stopped,
-			Event_Resumed,
-			Event_Paused,
-			Event_VolumeUpdated
+			State_Idle,
+			State_Playing,
+			State_Paused,
 		};
-		using AudioEventCb_t = std::function<void(Event)>;
 
-		void Subscribe(AudioEventCb_t cb)
-		{
-			OSAL::UniqueLock l(eventCbMutex);
-			eventCb = cb;
-		}
+		using AudioEventCb_t = std::function<void(State)>;
+
+		void Subscribe(AudioEventCb_t cb);
+		State GetState();
+
 
 		virtual bool Play(std::unique_ptr<IDecoder> decoder) = 0;
 		virtual void Pause() = 0;
@@ -52,18 +48,15 @@ namespace ATE::Audio
 		virtual void SetVolume(std::uint8_t volume) = 0;
 
 	private:
+		State CurrentState = State_Idle;
+
 		AudioEventCb_t eventCb;
 		OSAL::Mutex eventCbMutex;
+		OSAL::Mutex StateMutex;
 
 	protected:
-		void Notify(Event event)
-		{
-			OSAL::UniqueLock l(eventCbMutex);
-			if (eventCb != nullptr)
-			{
-				eventCb(event);
-			}
-		}
+		void Notify(State event);
+		void SetState(State state);
 	};
 }
 

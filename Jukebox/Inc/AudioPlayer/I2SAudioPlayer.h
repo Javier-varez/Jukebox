@@ -26,13 +26,6 @@ namespace ATE::Audio
 	class I2SPlayer : public OSAL::Task, public IPlayer
 	{
 	public:
-		enum State
-		{
-			State_Idle,
-			State_Playing,
-			State_Paused,
-		};
-
 		enum HalfBuffer : std::uint32_t
 		{
 			FirstHalfBuffer,
@@ -88,8 +81,6 @@ namespace ATE::Audio
 
 		void NotifyEvent(EventType type, std::uint32_t arg = 0, std::uint32_t timeout = osWaitForever);
 
-		void SetState(State state);
-		State GetState();
 		void SetShadowDecoder(std::unique_ptr<IDecoder> decoder);
 		void UpdateDecoderFromShadow();
 
@@ -99,9 +90,6 @@ namespace ATE::Audio
 		std::unique_ptr<IDecoder> CurrentDecoder;
 
 		std::int16_t InternalBuffer[N_CHANNELS * N_SAMPLES_IN_INTERNAL_BUF];
-
-		OSAL::Mutex StateMutex;
-		State CurrentState;
 
 		std::unique_ptr<IDecoder> ShadowDecoder;
 		OSAL::Mutex ShadowDecoderMutex;

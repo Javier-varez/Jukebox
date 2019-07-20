@@ -20,6 +20,7 @@ namespace ATE::Device
 	{
 	public:
 		virtual std::size_t Read(std::uint8_t* buffer, std::size_t length) = 0;
+		virtual bool Exists();
 
 		virtual ~IFile() = default;
 	};

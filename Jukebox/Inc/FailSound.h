@@ -4,17 +4,17 @@
  * AllThingsEmbedded Jukebox Machine
  * https://AllThingsEmbedded.net
  *
- * File: ACKSound.h
- * Brief: Sound for Acknowledgement
+ * File: FailSound.h
+ * Brief: Sound for Failure
  * Module: Sound
  */
 
-#ifndef ATE_ACK_SOUND_H_
-#define ATE_ACK_SOUND_H_
+#ifndef ATE_FAIL_SOUND_H_
+#define ATE_FAIL_SOUND_H_
 
 namespace ATE::Audio::Sound
 {
-	unsigned char ACK_mp3[] = {
+	constexpr unsigned char Fail_mp3[] = {
 	  0xff, 0xfb, 0x50, 0xc4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x6e, 0x66,
 	  0x6f, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x14,
@@ -454,4 +454,4 @@ namespace ATE::Audio::Sound
 	};
 }
 
-#endif /* INC_ACKSOUND_H_ */
+#endif /* ATE_FAIL_SOUND_H_ */

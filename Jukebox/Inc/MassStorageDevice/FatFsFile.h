@@ -20,12 +20,14 @@ namespace ATE::Device
 	class FatFsFile : public IFile
 	{
 	public:
-		FatFsFile(char *path);
+		FatFsFile(const char *path);
 		virtual ~FatFsFile();
 		std::size_t Read(std::uint8_t* buffer, std::size_t length) override;
+		bool Exists() override;
 
 	private:
 		FIL file;
+		bool exists;
 	};
 }
 

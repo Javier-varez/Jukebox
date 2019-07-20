@@ -14,14 +14,16 @@
 
 namespace ATE::Device
 {
-	FatFsFile::FatFsFile(char *path)
+	FatFsFile::FatFsFile(const char *path)
 	{
 		if (f_open(&file, path, FA_READ | FA_WRITE) != FR_OK)
 		{
 			ATE::Logger::GetLogger().Log(
 					ATE::Logger::LogLevel_WARNING,
 					"Couldn't open file %s\n", path);
+			exists = false;
 		}
+		exists = true;
 	}
 
 	FatFsFile::~FatFsFile()
@@ -37,6 +39,11 @@ namespace ATE::Device
 			return 0;
 		}
 		return read;
+	}
+
+	bool FatFsFile::Exists()
+	{
+		return exists;
 	}
 }
 

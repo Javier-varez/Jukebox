@@ -96,13 +96,13 @@ namespace ATE::Device
 		return false;
 	}
 
-	std::unique_ptr<IFile> USBHostMSC::OpenFile(char *path)
+	std::unique_ptr<IFile> USBHostMSC::OpenFile(const char *path)
 	{
 		std::unique_ptr<FatFsFile> file = std::make_unique<FatFsFile>(path);
 		return file;
 	}
 
-	std::unique_ptr<IDirReader> USBHostMSC::OpenDir(char *path)
+	std::unique_ptr<IDirReader> USBHostMSC::OpenDir(const char *path)
 	{
 		std::unique_ptr<FatFsDirReader> dirReader = std::make_unique<FatFsDirReader>(path);
 		return dirReader;
