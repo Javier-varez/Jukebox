@@ -22,9 +22,9 @@ namespace ATE::Device
 	KeyPadAnalog::KeyPadAnalog()
 		: Task(TASK_NAME, osPriorityHigh, 1024),
 		  adc(ADC_Dev::GetDevice(ADC_Dev::SOURCE_ADC1)),
-		  rowSymbols({ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-	                   'L', 'N', 'M', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-	                   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'})
+		  rowSymbols({ 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A',
+					   'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'M', 'N', 'L',
+	                   '0', '9', '8', '7', '6', '5', '4', '3', '2', '1'})
 	{
 
 	}
