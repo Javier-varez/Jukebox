@@ -21,7 +21,7 @@ namespace ATE::Device
 	{
 	public:
 		FatFsFile(char *path);
-		~FatFsFile();
+		virtual ~FatFsFile();
 		std::size_t Read(std::uint8_t* buffer, std::size_t length) override;
 
 	private:

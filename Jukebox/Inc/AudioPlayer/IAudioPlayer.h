@@ -15,6 +15,11 @@
 
 #include "MassStorageDevice/IFile.h"
 #include "AudioPlayer/Decoder/IDecoder.h"
+
+#include <OS/Mutex.h>
+#include <OS/UniqueLock.h>
+
+#include <functional>
 #include <memory>
 
 namespace ATE::Audio
@@ -22,13 +27,43 @@ namespace ATE::Audio
 	class IPlayer
 	{
 	public:
-		virtual bool Play(std::unique_ptr<IDecoder> decoder) = 0;
+		enum Event
+		{
+			Event_None = 0,
+			Event_Playing,
+			Event_Stopped,
+			Event_Resumed,
+			Event_Paused,
+			Event_VolumeUpdated
+		};
+		using AudioEventCb_t = std::function<void(Event)>;
 
+		void Subscribe(AudioEventCb_t cb)
+		{
+			OSAL::UniqueLock l(eventCbMutex);
+			eventCb = cb;
+		}
+
+		virtual bool Play(std::unique_ptr<IDecoder> decoder) = 0;
 		virtual void Pause() = 0;
 		virtual void Resume() = 0;
 		virtual void Stop() = 0;
 
 		virtual void SetVolume(std::uint8_t volume) = 0;
+
+	private:
+		AudioEventCb_t eventCb;
+		OSAL::Mutex eventCbMutex;
+
+	protected:
+		void Notify(Event event)
+		{
+			OSAL::UniqueLock l(eventCbMutex);
+			if (eventCb != nullptr)
+			{
+				eventCb(event);
+			}
+		}
 	};
 }
 

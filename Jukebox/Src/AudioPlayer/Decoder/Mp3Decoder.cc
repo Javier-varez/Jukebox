@@ -10,6 +10,7 @@
  */
 
 #include "AudioPlayer/Decoder/Mp3Decoder.h"
+#include "stm32f4xx_hal.h"
 
 namespace ATE::Audio
 {

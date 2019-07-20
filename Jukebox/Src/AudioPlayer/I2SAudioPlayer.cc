@@ -47,7 +47,7 @@ extern "C"
 namespace ATE::Audio
 {
 	constexpr static std::size_t MAX_EVENTS_IN_QUEUE = 10;
-	constexpr static std::size_t INITIAL_VOLUME = 60;
+	constexpr static std::size_t INITIAL_VOLUME = 80;
 
 	I2SPlayer& I2SPlayer::GetPlayer()
 	{
@@ -141,7 +141,7 @@ namespace ATE::Audio
 	void I2SPlayer::HandleStopEvent()
 	{
 		SetState(State_Idle);
-		BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+		BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW);
 	}
 
 	void I2SPlayer::HandleStartEvent()
@@ -153,10 +153,13 @@ namespace ATE::Audio
 		UpdateDecoderFromShadow();
 
 		std::size_t nSamples = CurrentDecoder->Decode(InternalBuffer, N_SAMPLES_IN_INTERNAL_BUF);
+		std::uint32_t SamplingFrequency = CurrentDecoder->GetSampleFrequency();
+		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "Sampling Frequency is %d\n", SamplingFrequency);
+
 		if (BSP_AUDIO_OUT_Init(
 				OUTPUT_DEVICE_HEADPHONE,
 				CurrentVolume,
-				CurrentDecoder->GetSampleFrequency()) != AUDIO_OK)
+				SamplingFrequency) != AUDIO_OK)
 		{
 			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Error initializing output device\n");
 			SetState(State_Idle);

@@ -44,16 +44,13 @@ namespace ATE::Device
 			case HOST_USER_DISCONNECTION:
 				usb.SetAvailable(false);
 				usb.SetMounted(false);
-				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "USB Device Disconnected\n");
 				break;
 
 			case HOST_USER_CLASS_ACTIVE:
 				usb.SetAvailable(true);
-				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "USB Device Ready\n");
 				break;
 
 			case HOST_USER_CONNECTION:
-				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "USB Device Connected\n");
 				break;
 
 			default:
@@ -121,7 +118,8 @@ namespace ATE::Device
 
 		Logger::GetLogger().Log(
 				Logger::LogLevel_DEBUG,
-				"Registered USB MSC as Drive %s\n", USBHPath
+				"Registered USB MSC as Drive %s\n",
+				USBHPath
 			);
 
 		if (USBH_Init(&hUSB_Host, USBHostMSC::USBHostCallback, HOST_FS) != USBH_OK)
