@@ -16,7 +16,7 @@
 
 namespace ATE::SM
 {
-	constexpr static std::uint32_t KEYPAD_TIMEOUT_MS = 10000;
+	constexpr static std::uint32_t KEYPAD_TIMEOUT_MS = 2000;
 
 	KeyPadSM::KeyPadSM() :
 		OSAL::Task("KeyPadSM", osPriorityHigh, 2048),
@@ -45,12 +45,12 @@ namespace ATE::SM
 		callback = cb;
 	}
 
-	void KeyPadSM::Notify(char letter, char number)
+	void KeyPadSM::Notify(EventType type, char letter, char number)
 	{
 		OSAL::UniqueLock l(cbMutex);
 		if (callback != nullptr)
 		{
-			callback(letter, number);
+			callback(type, letter, number);
 		}
 	}
 
@@ -79,6 +79,8 @@ namespace ATE::SM
 		KeyEvent event;
 		EventQueue.Pop(event, KEYPAD_TIMEOUT_MS);
 
+		static int key_timeout = 0;
+
 		switch (GetState())
 		{
 		case KeyPadSM::State_Idle:
@@ -87,6 +89,10 @@ namespace ATE::SM
 				letter = event.key;
 				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "Selected key %c\n", event.key);
 				SetState(State_SelectedLetter);
+			}
+			else if ((event.state == Device::IKeyPad::KEY_PRESSED) && (event.key == '0'))
+			{
+				SetState(State_DetectedPossibleStop);
 			}
 			break;
 		case KeyPadSM::State_SelectedLetter:
@@ -99,8 +105,13 @@ namespace ATE::SM
 			if (event.state == Device::IKeyPad::KEY_EVENT_NONE)
 			{
 				// Exit because of timeout
-				SetState(State_Idle);
-				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: %s - Exit because of timeout\n", __FILE__, __func__);
+				key_timeout++;
+				if (key_timeout == 5)
+				{
+					key_timeout = 0;
+					SetState(State_Idle);
+					Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: %s - Exit because of timeout\n", __FILE__, __func__);
+				}
 			}
 			else if ((event.state == Device::IKeyPad::KEY_PRESSED) && IsNumber(event.key))
 			{
@@ -123,9 +134,21 @@ namespace ATE::SM
 						__func__,
 						letter,
 						number);
-				Notify(letter, number);
+				Notify(Event_PlaySong, letter, number);
 				SetState(State_Idle);
 			}
+			break;
+		case KeyPadSM::State_DetectedPossibleStop:
+			if (event.state == Device::IKeyPad::KEY_EVENT_NONE)
+			{
+				Notify(Event_StopPlayback);
+				SetState(State_Idle);
+			}
+			else if ((event.state == Device::IKeyPad::KEY_RELEASED) && (event.key == '0'))
+			{
+				SetState(State_Idle);
+			}
+			break;
 		}
 
 		return true;

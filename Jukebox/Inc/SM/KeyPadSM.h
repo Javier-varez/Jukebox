@@ -31,6 +31,13 @@ namespace ATE::SM
 			State_SelectedLetter,
 			State_ReleasedLetter,
 			State_SelectedNumber,
+			State_DetectedPossibleStop,
+		};
+
+		enum EventType
+		{
+			Event_PlaySong = 0,
+			Event_StopPlayback
 		};
 
 		struct KeyEvent
@@ -45,7 +52,7 @@ namespace ATE::SM
 			}
 		};
 
-		using Callback_t = std::function<void(char letter, char number)>;
+		using Callback_t = std::function<void(EventType event, char letter, char number)>;
 
 		KeyPadSM();
 		State GetState();
@@ -70,7 +77,7 @@ namespace ATE::SM
 		bool IsLetter(char c);
 		bool IsNumber(char c);
 
-		void Notify(char letter, char number);
+		void Notify(EventType event, char letter = '\0', char number = '\0');
 
 		bool KeyPadCb(char key, Device::IKeyPad::KeyState state);
 	};

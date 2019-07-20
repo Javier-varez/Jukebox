@@ -44,7 +44,8 @@ namespace ATE::Jukebox
 			Event_NoEvent = 0,
 			Event_UsbStorageChanged,
 			Event_PlaybackStateChanged,
-			Event_KeyPadUpdate
+			Event_KeyPadUpdate,
+			Event_KeyPadStopPlayback
 		};
 
 		struct Event
@@ -89,9 +90,16 @@ namespace ATE::Jukebox
 			EventQueue.Push(Event(Event_PlaybackStateChanged, state), 0);
 		}
 
-		void KeyPadSMCb(char letter, char number)
+		void KeyPadSMCb(SM::KeyPadSM::EventType event, char letter, char number)
 		{
-			EventQueue.Push(Event(Event_KeyPadUpdate, letter, number), 0);
+			if (event == SM::KeyPadSM::Event_PlaySong)
+			{
+				EventQueue.Push(Event(Event_KeyPadUpdate, letter, number), 0);
+			}
+			else if (event == SM::KeyPadSM::Event_StopPlayback)
+			{
+				EventQueue.Push(Event(Event_KeyPadStopPlayback, letter, number), 0);
+			}
 		}
 
 		virtual void Init() override
@@ -117,7 +125,8 @@ namespace ATE::Jukebox
 							&JukeboxTask::KeyPadSMCb,
 							this,
 							std::placeholders::_1,
-							std::placeholders::_2)
+							std::placeholders::_2,
+							std::placeholders::_3)
 			);
 		}
 
@@ -256,6 +265,11 @@ namespace ATE::Jukebox
 			AudioPlayer.Play(std::move(decoder));
 		}
 
+		void HandleKeyPadStopPlaybackEvent()
+		{
+			AudioPlayer.Stop();
+		}
+
 		void PlayFailSound()
 		{
 			if (playing)
@@ -306,6 +320,9 @@ namespace ATE::Jukebox
 				HandleKeyPadUpdateEvent(
 						static_cast<char>(event.arg1),
 						static_cast<char>(event.arg2));
+				break;
+			case Event_KeyPadStopPlayback:
+				HandleKeyPadStopPlaybackEvent();
 				break;
 			case Event_NoEvent:
 				logger.Log(Logger::LogLevel_ERROR, "%s - %s: Received empty event!\n", __FILE__, __func__);
