@@ -1,2 +1,6 @@
 Debug
 Release
+.cache
+.tools
+build
+compile_commands.json
