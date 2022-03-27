@@ -19,14 +19,14 @@ namespace ATE::Audio
 	{
 		if (file->Read(reinterpret_cast<std::uint8_t*>(&header), sizeof(header)) != sizeof(header))
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "%s: Error reading header\n", __func__);
+			LOG_ERROR(Logger::GetLogger(), "Error reading header");
 			return;
 		}
 
-		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: SampleRate is %d\n", __func__, header.sampleRate);
-		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: NumChannels %d\n", __func__, header.numChannels);
-		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: bitsPerSample %d\n", __func__, header.bitsPerSample);
-		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: byteRate %d\n", __func__, header.byteRate);
+		LOG_DEBUG(Logger::GetLogger(), "SampleRate is %u", header.sampleRate);
+		LOG_DEBUG(Logger::GetLogger(), "NumChannels %hu", header.numChannels);
+		LOG_DEBUG(Logger::GetLogger(), "bitsPerSample %hu", header.bitsPerSample);
+		LOG_DEBUG(Logger::GetLogger(), "byteRate %u", header.byteRate);
 	}
 
 	std::size_t WavDecoder::Decode(std::int16_t* buffer, std::size_t nSamples)

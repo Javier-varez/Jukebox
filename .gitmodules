@@ -1,3 +1,6 @@
 [submodule "buildsystem"]
 	path = buildsystem
 	url = https://github.com/Javier-varez/buildsystem
+[submodule "Postform"]
+	path = Postform
+	url = https://github.com/Javier-varez/buildsystem

@@ -4,17 +4,20 @@ include $(CLEAR_VARS)
 
 LOCAL_NAME := jukebox_fw.elf
 
+TARGET_CFLAGS := \
+    -mcpu=cortex-m4 \
+    -mfloat-abi=softfp \
+    -mfpu=fpv4-sp-d16 \
+    -mthumb \
+    -specs=nosys.specs \
+
 CROSS_COMPILE := arm-none-eabi-
 CC := $(CROSS_COMPILE)gcc
 CXX := $(CROSS_COMPILE)g++
 AS := $(CROSS_COMPILE)as
 
 LOCAL_CFLAGS := \
-    -mcpu=cortex-m4 \
-    -mfloat-abi=softfp \
-    -mfpu=fpv4-sp-d16 \
-    -mthumb \
-    -specs=nosys.specs \
+    $(TARGET_CFLAGS) \
     -DUSE_HAL_DRIVER \
     -DSTM32F411xE \
     -I$(LOCAL_DIR)/Core/Inc \
@@ -43,9 +46,9 @@ LOCAL_CFLAGS := \
 
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
-    -std=gnu++17 \
+    -std=gnu++20 \
     -fno-exceptions \
-    -fno-rtti
+    -fno-rtti 
 
 LOCAL_LDFLAGS := \
     -Wl,--gc-sections \
@@ -67,7 +70,7 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/Core/Src/main.c \
     $(LOCAL_DIR)/Core/Src/stm32f4xx_hal_msp.c \
     $(LOCAL_DIR)/Core/Src/stm32f4xx_hal_timebase_tim.c \
-    $(LOCAL_DIR)/Core/Src/stm32f4xx_it.c \
+    $(LOCAL_DIR)/Core/Src/stm32f4xx_it.cc \
     $(LOCAL_DIR)/Core/Src/system_stm32f4xx.c \
     $(LOCAL_DIR)/Core/Src/usart.c \
     $(LOCAL_DIR)/Drivers/BSP/Components/cs43l22/cs43l22.c \
@@ -120,6 +123,7 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/Jukebox/Src/OS/UniqueLock.cc \
     $(LOCAL_DIR)/Jukebox/Src/SM/KeyPadSM.cc \
     $(LOCAL_DIR)/Jukebox/Src/Utils/CircularBuffer.cc \
+    $(LOCAL_DIR)/Jukebox/Src/LED/LedController.cc \
     $(LOCAL_DIR)/Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.c \
     $(LOCAL_DIR)/Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.c \
     $(LOCAL_DIR)/Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.c \
@@ -144,6 +148,20 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/Middlewares/Third_Party/FreeRTOS/Source/timers.c \
     $(LOCAL_DIR)/USB_HOST/App/usb_host.c \
     $(LOCAL_DIR)/USB_HOST/Target/usbh_conf.c \
-    $(LOCAL_DIR)/USB_HOST/Target/usbh_platform.c
+    $(LOCAL_DIR)/USB_HOST/Target/usbh_platform.c \
+    $(LOCAL_DIR)/Postform/libpostform/src/rtt/transport.cpp \
+    $(LOCAL_DIR)/Postform/libpostform/src/file_logger.cpp \
+    $(LOCAL_DIR)/Postform/libpostform/src/format_validator.cpp \
+    $(LOCAL_DIR)/Postform/libpostform/src/macros.cpp \
+    $(LOCAL_DIR)/Postform/libpostform/src/platform.cpp
+
+LOCAL_STATIC_LIBS := \
+    libpostform \
+    libditto 
 
 include $(BUILD_BINARY)
+
+debug: build/targets/jukebox_fw.elf
+	$(SILENT)postform_rtt $< --chip STM32F411VETx -d
+
+.PHONY: debug

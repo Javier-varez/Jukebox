@@ -47,10 +47,9 @@ namespace ATE::Device
 			hadc = &::hadc1;
 			break;
 		default:
-			ATE::Logger::GetLogger().Log(
-					ATE::Logger::LogLevel_ERROR,
-					"%s: Can't find specified ADC %d\r\n",
-					__func__, source);
+			LOG_ERROR(Logger::GetLogger(),
+					"Can't find specified ADC %d",
+					(int)source);
 			break;
 		}
 	}
@@ -67,8 +66,7 @@ namespace ATE::Device
 
 		if (HAL_ADC_ConfigChannel(hadc, &sConfig) != HAL_OK)
 		{
-			ATE::Logger &logger = ATE::Logger::GetLogger();
-			logger.Log(ATE::Logger::LogLevel_ERROR, "%s: Couldn't set configuration channel\r\n", __func__);
+			LOG_ERROR(Logger::GetLogger(), "Couldn't set configuration channel");
 			return false;
 		}
 		return true;
@@ -78,8 +76,7 @@ namespace ATE::Device
 	{
 		if (HAL_ADC_Start_IT(hadc) != HAL_OK)
 		{
-			ATE::Logger &logger = ATE::Logger::GetLogger();
-			logger.Log(ATE::Logger::LogLevel_ERROR, "%s: Couldn't start conversion", __func__);
+			LOG_ERROR(Logger::GetLogger(), "Couldn't start conversion");
 			return false;
 		}
 		return true;

@@ -57,8 +57,7 @@ namespace ATE::SM
 	bool KeyPadSM::KeyPadCb(char key, Device::IKeyPad::KeyState state)
 	{
 		EventQueue.Push(KeyEvent(key, state), 0);
-		Logger::GetLogger().Log(
-							Logger::LogLevel_DEBUG, "Key %c, state %d\n", key, state);
+		LOG_DEBUG(Logger::GetLogger(), "Key %hhu, state %d", key, (int)state);
 		return true;
 	}
 
@@ -87,7 +86,7 @@ namespace ATE::SM
 			if ((event.state == Device::IKeyPad::KEY_PRESSED) && IsLetter(event.key))
 			{
 				letter = event.key;
-				Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "Selected key %c\n", event.key);
+				LOG_DEBUG(Logger::GetLogger(), "Selected key %hhu", event.key);
 				SetState(State_SelectedLetter);
 			}
 			else if ((event.state == Device::IKeyPad::KEY_PRESSED) && (event.key == '0'))
@@ -110,7 +109,7 @@ namespace ATE::SM
 				{
 					key_timeout = 0;
 					SetState(State_Idle);
-					Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "%s: %s - Exit because of timeout\n", __FILE__, __func__);
+					LOG_DEBUG(Logger::GetLogger(), "Exit because of timeout");
 				}
 			}
 			else if ((event.state == Device::IKeyPad::KEY_PRESSED) && IsNumber(event.key))
@@ -127,11 +126,8 @@ namespace ATE::SM
 		case KeyPadSM::State_SelectedNumber:
 			if ((event.state == Device::IKeyPad::KEY_RELEASED) && event.key == number)
 			{
-				Logger::GetLogger().Log(
-						Logger::LogLevel_DEBUG,
-						"%s: %s - PlaySong %c%c\n",
-						__FILE__,
-						__func__,
+				LOG_DEBUG(Logger::GetLogger(),
+						"PlaySong %hhu%hhu",
 						letter,
 						number);
 				Notify(Event_PlaySong, letter, number);

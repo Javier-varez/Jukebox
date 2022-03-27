@@ -39,7 +39,7 @@ extern "C"
 	}
 
 	void BSP_AUDIO_OUT_Error_CallBack(void) {
-		ATE::Logger::GetLogger().Log(ATE::Logger::LogLevel_ERROR, "%s\n", __func__);
+		LOG_ERROR(ATE::Logger::GetLogger(), "Error processing audio out");
 	}
 }
 
@@ -47,7 +47,7 @@ extern "C"
 namespace ATE::Audio
 {
 	constexpr static std::size_t MAX_EVENTS_IN_QUEUE = 10;
-	constexpr static std::size_t INITIAL_VOLUME = 80;
+	constexpr static std::size_t INITIAL_VOLUME = 100;
 
 	I2SPlayer& I2SPlayer::GetPlayer()
 	{
@@ -94,10 +94,10 @@ namespace ATE::Audio
 			HandleResumeEvent();
 			break;
 		case Event_NoEvent:
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Empty event at %s\n", __func__);
+			LOG_ERROR(Logger::GetLogger(),"Empty event");
 			break;
 		default:
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Received unknown event at %s\n", __func__);
+			LOG_ERROR(Logger::GetLogger(),"Received unknown event");
 			break;
 		}
 		return true;
@@ -119,16 +119,16 @@ namespace ATE::Audio
 					N_SAMPLES_IN_INTERNAL_BUF / 2);
 			break;
 		default:
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR,
-								"Unknown argument for %s\n", __func__);
+			LOG_ERROR(Logger::GetLogger(),
+								"Unknown argument");
 			return;
 			break;
 		}
 
 		if (nSamples < N_SAMPLES_IN_INTERNAL_BUF / 2)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_DEBUG,
-					"EOF found. Scheduling stop\n");
+			LOG_DEBUG(Logger::GetLogger(),
+					"EOF found. Scheduling stop");
 			NotifyEvent(Event_Stop);
 		}
 	}
@@ -154,14 +154,14 @@ namespace ATE::Audio
 
 		std::size_t nSamples = CurrentDecoder->Decode(InternalBuffer, N_SAMPLES_IN_INTERNAL_BUF);
 		std::uint32_t SamplingFrequency = CurrentDecoder->GetSampleFrequency();
-		Logger::GetLogger().Log(Logger::LogLevel_DEBUG, "Sampling Frequency is %d\n", SamplingFrequency);
+		LOG_DEBUG(Logger::GetLogger(), "Sampling Frequency is %u", SamplingFrequency);
 
 		if (BSP_AUDIO_OUT_Init(
 				OUTPUT_DEVICE_HEADPHONE,
 				CurrentVolume,
 				SamplingFrequency) != AUDIO_OK)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Error initializing output device\n");
+			LOG_ERROR(Logger::GetLogger(),"Error initializing output device");
 			SetState(State_Idle);
 			return;
 		}
@@ -169,7 +169,7 @@ namespace ATE::Audio
 		if (BSP_AUDIO_OUT_Play(reinterpret_cast<std::uint16_t*>(InternalBuffer),
 				nSamples * N_CHANNELS * sizeof(std::int16_t)) != AUDIO_OK)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Error starting playback\n");
+			LOG_ERROR(Logger::GetLogger(),"Error starting playback");
 			SetState(State_Idle);
 			return;
 		}
@@ -214,12 +214,12 @@ namespace ATE::Audio
 	{
 		if (decoder == nullptr)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Can't play anything without a decoder\n");
+			LOG_ERROR(Logger::GetLogger(),"Can't play anything without a decoder");
 			return false;
 		}
 		if (GetState() == State_Playing)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_ERROR, "Please, stop the audio player first\n");
+			LOG_ERROR(Logger::GetLogger(),"Please, stop the audio player first");
 			return false;
 		}
 		SetShadowDecoder(std::move(decoder));
@@ -246,7 +246,7 @@ namespace ATE::Audio
 
 	void I2SPlayer::SetVolume(std::uint8_t volume)
 	{
-		if (volume < 100)
+		if (volume > 100)
 		{
 			volume = 100;
 		}

@@ -30,6 +30,8 @@
 
 #include "SM/KeyPadSM.h"
 
+#include "LED/LedController.h"
+
 #include "FailSound.h"
 #include "OkSound.h"
 
@@ -75,8 +77,7 @@ namespace ATE::Jukebox
 			Task(TASK_NAME, osPriorityRealtime, 4096),
 			EventQueue(20),
 			MassStorageDevice(Device::MassStorageDeviceFactory::GetUSBHostStorage()),
-			AudioPlayer(Audio::PlayerFactory::GetI2SPlayer()),
-			logger(Logger::GetLogger())
+			AudioPlayer(Audio::PlayerFactory::GetI2SPlayer())
 		{
 
 		}
@@ -157,7 +158,7 @@ namespace ATE::Jukebox
 					{
 						trackMap[letter][number] = TRACK_WAV;
 					}
-					logger.Log(Logger::LogLevel_DEBUG, "%s\n", fInfo.path);
+					LOG_DEBUG(Logger::GetLogger(), "%s", fInfo.path);
 				}
 
 			} while(fInfo.type != Device::FileInfo::TYPE_NONE);
@@ -217,7 +218,7 @@ namespace ATE::Jukebox
 
 			if (!usbOk)
 			{
-				logger.Log(Logger::LogLevel_INFO, "Usb not mounted\n");
+				LOG_INFO(Logger::GetLogger(), "Usb not mounted");
 				PlayFailSound();
 				return;
 			}
@@ -234,7 +235,7 @@ namespace ATE::Jukebox
 			}
 			else
 			{
-				logger.Log(Logger::LogLevel_INFO, "File wasn't found during scan\n", fileName);
+				LOG_INFO(Logger::GetLogger(), "File `%s` wasn't found during scan", fileName);
 				PlayFailSound();
 				return;
 			}
@@ -242,7 +243,7 @@ namespace ATE::Jukebox
 			std::unique_ptr<Device::IFile> file = MassStorageDevice.OpenFile(fileName);
 			if (!file->Exists())
 			{
-				logger.Log(Logger::LogLevel_INFO, "File %s doesn't exist\n", fileName);
+				LOG_INFO(Logger::GetLogger(), "File `%s` doesn't exist", fileName);
 				PlayFailSound();
 				return;
 			}
@@ -253,7 +254,7 @@ namespace ATE::Jukebox
 				Delay(100);
 			}
 
-			logger.Log(Logger::LogLevel_INFO, "Playing file %s\n", fileName);
+			LOG_INFO(Logger::GetLogger(), "Playing file %s", fileName);
 			std::unique_ptr<Audio::IDecoder> decoder;
 			if (type == TRACK_MP3)
 			{
@@ -326,10 +327,10 @@ namespace ATE::Jukebox
 				HandleKeyPadStopPlaybackEvent();
 				break;
 			case Event_NoEvent:
-				logger.Log(Logger::LogLevel_ERROR, "%s - %s: Received empty event!\n", __FILE__, __func__);
+				LOG_ERROR(Logger::GetLogger(), "Received empty event!");
 				break;
 			default:
-				logger.Log(Logger::LogLevel_ERROR, "%s - %s: Received corrupted event!\n", __FILE__, __func__);
+				LOG_ERROR(Logger::GetLogger(), "Received corrupted event!");
 				break;
 			}
 
@@ -341,7 +342,7 @@ namespace ATE::Jukebox
 		Device::IMassStorageDevice& MassStorageDevice;
 		Audio::IPlayer& AudioPlayer;
 		SM::KeyPadSM KeyPadSM;
-		Logger& logger;
+		LedController Led;
 
 		bool usbOk;
 		bool playing;

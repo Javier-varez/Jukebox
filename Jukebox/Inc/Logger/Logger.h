@@ -5,55 +5,29 @@
  * https://AllThingsEmbedded.net
  *
  * File: Logger.h
- * Brief: Logger implementation using uart in DMA mode
+ * Brief: Logger implementation using Postform
  * Module: Logger
  */
 
 #ifndef ATE_LOGGER_LOGGER_H_
 #define ATE_LOGGER_LOGGER_H_
 
-#include "OS/Task.h"
-#include "OS/Mutex.h"
-#include "OS/Queue.h"
+#ifdef __cplusplus
 
-namespace ATE
+#include "postform/rtt/transport.h"
+#include "postform/serial_logger.h"
+
+namespace ATE::Logger
 {
-	class Logger : public OSAL::Task
-	{
-	public:
-		enum LogLevel
-		{
-			LogLevel_DEBUG = 0,
-			LogLevel_INFO,
-			LogLevel_WARNING,
-			LogLevel_ERROR,
-		};
-		struct LogMsg
-		{
-			constexpr static std::size_t MAX_LENGTH = 100;
-			char msg[MAX_LENGTH];
-		};
+	Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger();
 
-
-		static Logger& GetLogger();
-
-		void SetLevel(LogLevel level);
-		void Log(LogLevel level, const char* format, ... );
-
-		Logger(const Logger&) = delete;
-		Logger operator=(const Logger&) = delete;
-		Logger(Logger&&) = delete;
-	private:
-		Logger();
-		void Init() override;
-		bool Run() override;
-
-		LogLevel level;
-		OSAL::Queue<LogMsg> queue;
-		OSAL::Mutex mutex;
-	};
+	void SetLevel(Postform::LogLevel level);
 }
 
+#else 
 
+void log_error(const char* str);
+
+#endif
 
 #endif /* ATE_LOGGER_LOGGER_H_ */

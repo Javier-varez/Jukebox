@@ -25,7 +25,7 @@ download_gcc() {
     if [ -f "${GCC_ARCHIVE}.tar.bz2" ]; then
         echo "skipping gcc download, already downloaded"
     else
-        wget ${GCC_URL}
+        curl  -L ${GCC_URL} > ${GCC_ARCHIVE}.tar.bz2
     fi
     popd
 

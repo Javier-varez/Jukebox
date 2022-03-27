@@ -42,15 +42,18 @@ namespace ATE::Device
 		switch(state)
 		{
 			case HOST_USER_DISCONNECTION:
+				LOG_DEBUG(Logger::GetLogger(), "USB Disconnected");
 				usb.SetAvailable(false);
 				usb.SetMounted(false);
 				break;
 
 			case HOST_USER_CLASS_ACTIVE:
+				LOG_DEBUG(Logger::GetLogger(), "USB Available");
 				usb.SetAvailable(true);
 				break;
 
 			case HOST_USER_CONNECTION:
+				LOG_DEBUG(Logger::GetLogger(), "USB Connected");
 				break;
 
 			default:
@@ -62,18 +65,22 @@ namespace ATE::Device
 	{
 		if (!IsAvailable())
 		{
+			LOG_WARNING(Logger::GetLogger(), "Cannot mount, it is not available");
 			return false;
 		}
 		else if (IsMounted())
 		{
+			LOG_WARNING(Logger::GetLogger(), "It is already mounted");
 			return true;
 		}
 
 		if (f_mount(&FileSystem, USBHPath, 1) == FR_OK)
 		{
+			LOG_WARNING(Logger::GetLogger(), "Mount success");
 			SetMounted(true);
 			return true;
 		}
+		LOG_WARNING(Logger::GetLogger(), "Mount error");
 		return false;
 	}
 
@@ -116,31 +123,27 @@ namespace ATE::Device
 		FATFS_LinkDriver(&USBH_Driver, USBHPath);
 		USBHPath[4] = '\0';
 
-		Logger::GetLogger().Log(
-				Logger::LogLevel_DEBUG,
-				"Registered USB MSC as Drive %s\n",
+		LOG_DEBUG(Logger::GetLogger(),
+				"Registered USB MSC as Drive %s",
 				USBHPath
 			);
 
 		if (USBH_Init(&hUSB_Host, USBHostMSC::USBHostCallback, HOST_FS) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to initialize USB FS\n");
+			LOG_ERROR(Logger::GetLogger(),
+					"Unable to initialize USB FS");
 			return;
 		}
 		if (USBH_RegisterClass(&hUSB_Host, USBH_MSC_CLASS) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to register MSC Class\n");
+			LOG_ERROR(Logger::GetLogger(),
+					"Unable to register MSC Class");
 			return;
 		}
 		if (USBH_Start(&hUSB_Host) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to start USB Host operation\n");
+			LOG_ERROR(Logger::GetLogger(),
+					"Unable to start USB Host operation");
 			return;
 		}
 

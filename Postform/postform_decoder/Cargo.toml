@@ -1,0 +1,25 @@
+[package]
+name = "postform_decoder"
+version = "0.4.0"
+authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
+description = "Decoder for the Postform logging framework, an efficient logging framework for mcu's"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/Javier-varez/Postform"
+repository = "https://github.com/Javier-varez/Postform"
+categories = ["embedded"]
+keywords = ["embedded", "log", "logger"]
+readme = "../README.md"
+edition = "2021"
+
+[build-dependencies]
+bindgen = "0.57"
+
+[dependencies]
+object = "0.22"
+strum_macros = "0.20"
+thiserror = "1.0"
+byteorder = "1.3"
+leb128 = "0.2"
+log = "0.4"
+rcobs = "0.1"
+colored = "2.0"

@@ -35,6 +35,8 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
 
+void log_error(const char* str);
+
 /* USER CODE BEGIN INCLUDE */
 
 /* USER CODE END INCLUDE */
@@ -84,7 +86,7 @@
 #define USBH_MAX_DATA_BUFFER      512U
  
 /*----------   -----------*/
-#define USBH_DEBUG_LEVEL      0U
+#define USBH_DEBUG_LEVEL      2U
  
 /*----------   -----------*/
 #define USBH_USE_OS      1U
@@ -130,8 +132,9 @@
 
 #if (USBH_DEBUG_LEVEL > 0U)
 #define  USBH_UsrLog(...)   do { \
-                            printf(__VA_ARGS__); \
-                            printf("\n"); \
+  static char buffer[128]; \
+  snprintf(buffer, 128, __VA_ARGS__); \
+  log_error(buffer); \
 } while (0)
 #else
 #define USBH_UsrLog(...) do {} while (0)
@@ -140,9 +143,9 @@
 #if (USBH_DEBUG_LEVEL > 1U)
 
 #define  USBH_ErrLog(...) do { \
-                            printf("ERROR: ") ; \
-                            printf(__VA_ARGS__); \
-                            printf("\n"); \
+  static char buffer[128]; \
+  snprintf(buffer, 128, __VA_ARGS__); \
+  log_error(buffer); \
 } while (0)
 #else
 #define USBH_ErrLog(...) do {} while (0)

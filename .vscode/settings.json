@@ -1,0 +1,11 @@
+{
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "gpio.h": "c",
+        "main.h": "c",
+        "future": "cpp",
+        "*.def": "cpp",
+        "logger.h": "c",
+        "cstring": "cpp"
+    }
+}

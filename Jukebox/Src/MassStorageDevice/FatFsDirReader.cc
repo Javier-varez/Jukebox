@@ -20,7 +20,7 @@ namespace ATE::Device
 	{
 		if (f_opendir(&directory,  path) != FR_OK)
 		{
-			Logger::GetLogger().Log(Logger::LogLevel_WARNING, "Unable to find path %s\n", path);
+			LOG_WARNING(Logger::GetLogger(), "Unable to find path %s", path);
 			return;
 		}
 	}

@@ -1,0 +1,156 @@
+name: Postform
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  cargo_clippy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo fmt check
+      uses: actions-rs/cargo@v1
+      with:
+        command: fmt
+        args: --all -- --check
+    - name: Run cargo clippy
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
+
+  cargo_check:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo check
+      run: cargo check
+
+  cargo_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo build
+      run: cargo build
+    - name: Archive binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: postform_persist
+        path: postform/target/debug/postform_persist
+
+  clang_format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: clang-format lint
+      uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        clangFormatVersion: 10
+
+  clang-tidy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run static analysis for C++ project
+      uses: JacobDomagala/StaticAnalysis@v0.0.4
+      with:
+        cmake_args: -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake -DPOSTFORM_BUILD_TARGET_APP=true -DCMAKE_CXX_COMPILER=clang++
+        init_script: .github/workflows/init-script.sh
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev ninja-build
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo xtask test
+      uses: actions-rs/cargo@v1
+      with:
+        command: xtask
+        args: test
+
+  build_docs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: Build docs
+      uses: mattnotmitt/doxygen-action@v1
+      with:
+          working-directory: 'libpostform/'
+          doxyfile-path: 'Doxyfile'
+    - name: Archive docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: libpostform_docs
+        path: libpostform/docs
+
+  libpostform_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Build Cortex-M0 fw
+      uses: actions-rs/cargo@v1
+      with:
+        command: xtask
+        args: docker build-firmware cortex-m0
+    - name: Build Cortex-M3 fw
+      uses: actions-rs/cargo@v1
+      with:
+        command: xtask
+        args: docker build-firmware cortex-m3
