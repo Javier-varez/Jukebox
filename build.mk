@@ -34,7 +34,7 @@ LOCAL_CFLAGS := \
     -I$(LOCAL_DIR)/Middlewares/Third_Party/FreeRTOS/Source/include \
     -I$(LOCAL_DIR)/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
     -I$(LOCAL_DIR)/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F \
-    -I$(LOCAL_DIR)/Jukebox/inc \
+    -I$(LOCAL_DIR)/Jukebox/Inc \
     -Os \
     -g3 \
     -Wall \
