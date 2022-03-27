@@ -12,6 +12,7 @@
 #include <functional>
 #include <map>
 #include <cstring>
+#include <cstdio>
 
 #include "JukeboxStart.h"
 
@@ -221,14 +222,15 @@ namespace ATE::Jukebox
 				return;
 			}
 
-			char fileName[10];
+			constexpr static auto MAX_FILENAME_LEN = 10;
+			char fileName[MAX_FILENAME_LEN];
 			if (type == TRACK_MP3)
 			{
-				sprintf(fileName, "%c%c.mp3", letter, number);
+				snprintf(fileName, MAX_FILENAME_LEN, "%c%c.mp3", letter, number);
 			}
 			else if (type == TRACK_WAV)
 			{
-				sprintf(fileName, "%c%c.wav", letter, number);
+				snprintf(fileName, MAX_FILENAME_LEN, "%c%c.wav", letter, number);
 			}
 			else
 			{
@@ -299,7 +301,6 @@ namespace ATE::Jukebox
 					)
 			);
 		}
-
 
 		virtual bool Run() override
 		{
