@@ -10,6 +10,9 @@
  */
 
 #include "AudioPlayer/I2SAudioPlayer.h"
+
+#include <algorithm>
+
 #include "OS/UniqueLock.h"
 #include "Logger/Logger.h"
 
@@ -56,8 +59,7 @@ namespace ATE::Audio
 
     I2SPlayer::I2SPlayer() :
         Task("I2SPlayer", osPriorityRealtime, 4096),
-        EventQueue(MAX_EVENTS_IN_QUEUE),
-        CurrentVolume(INITIAL_VOLUME)
+        EventQueue(MAX_EVENTS_IN_QUEUE)
     {
 
     }
@@ -155,7 +157,7 @@ namespace ATE::Audio
 
         if (BSP_AUDIO_OUT_Init(
                 OUTPUT_DEVICE_HEADPHONE,
-                CurrentVolume,
+                INITIAL_VOLUME,
                 SamplingFrequency) != AUDIO_OK)
         {
             ATE_LOG_ERROR("Error initializing output device");
@@ -243,11 +245,7 @@ namespace ATE::Audio
 
     void I2SPlayer::SetVolume(std::uint8_t volume)
     {
-        if (volume < 100)
-        {
-            volume = 100;
-        }
-
+        std::clamp(volume, uint8_t{0}, uint8_t{100});
         NotifyEvent(Event_SetVolume, volume);
     }
 }

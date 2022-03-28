@@ -17,6 +17,9 @@
 namespace ATE::SM
 {
     constexpr static std::uint32_t KEYPAD_TIMEOUT_MS = 2000;
+    constexpr static char STOP_KEY = '0';
+    constexpr static char VOL_UP_KEY = '1';
+    constexpr static char VOL_DOWN_KEY = '2';
 
     KeyPadSM::KeyPadSM() :
         OSAL::Task("KeyPadSM", osPriorityHigh, 2048),
@@ -35,6 +38,7 @@ namespace ATE::SM
 
     void KeyPadSM::SetState(KeyPadSM::State s)
     {
+        ATE_LOG_DEBUG("New SM State %u", static_cast<uint32_t>(s));
         OSAL::UniqueLock l(stateMutex);
         state = s;
     }
@@ -83,15 +87,26 @@ namespace ATE::SM
         switch (GetState())
         {
         case KeyPadSM::State_Idle:
-            if ((event.state == Device::IKeyPad::KEY_PRESSED) && IsLetter(event.key))
+            if (event.state == Device::IKeyPad::KEY_PRESSED)
             {
-                letter = event.key;
-                ATE_LOG_DEBUG("Selected key %c", event.key);
-                SetState(State_SelectedLetter);
-            }
-            else if ((event.state == Device::IKeyPad::KEY_PRESSED) && (event.key == '0'))
-            {
-                SetState(State_DetectedPossibleStop);
+                if (IsLetter(event.key))
+                {
+                    letter = event.key;
+                    ATE_LOG_DEBUG("Selected key %c", event.key);
+                    SetState(State_SelectedLetter);
+                }
+                else if (event.key == STOP_KEY)
+                {
+                    SetState(State_DetectedPossibleStop);
+                }
+                else if (event.key == VOL_UP_KEY)
+                {
+                    SetState(State_VolUp);
+                }
+                else if (event.key == VOL_DOWN_KEY)
+                {
+                    SetState(State_VolDown);
+                }
             }
             break;
         case KeyPadSM::State_SelectedLetter:
@@ -137,8 +152,35 @@ namespace ATE::SM
                 Notify(Event_StopPlayback);
                 SetState(State_Idle);
             }
-            else if ((event.state == Device::IKeyPad::KEY_RELEASED) && (event.key == '0'))
+            else if ((event.state == Device::IKeyPad::KEY_RELEASED) && (event.key == STOP_KEY))
             {
+                // Released early, action not taken
+                SetState(State_Idle);
+            }
+            break;
+        case KeyPadSM::State_VolUp:
+            if (event.state == Device::IKeyPad::KEY_EVENT_NONE)
+            {
+                // VolUp on timeout
+                Notify(Event_VolUp);
+                SetState(State_Idle);
+            }
+            else if ((event.state == Device::IKeyPad::KEY_RELEASED) && (event.key == VOL_UP_KEY))
+            {
+                // Released early, action not taken
+                SetState(State_Idle);
+            }
+            break;
+        case KeyPadSM::State_VolDown:
+            if (event.state == Device::IKeyPad::KEY_EVENT_NONE)
+            {
+                // VolDown on timeout
+                Notify(Event_VolDown);
+                SetState(State_Idle);
+            }
+            else if ((event.state == Device::IKeyPad::KEY_RELEASED) && (event.key == VOL_DOWN_KEY))
+            {
+                // Released early, action not taken
                 SetState(State_Idle);
             }
             break;

@@ -46,7 +46,9 @@ namespace ATE::Jukebox
             Event_UsbStorageChanged,
             Event_PlaybackStateChanged,
             Event_KeyPadUpdate,
-            Event_KeyPadStopPlayback
+            Event_KeyPadStopPlayback,
+            Event_KeyPadVolUp,
+            Event_KeyPadVolDown
         };
 
         struct Event
@@ -99,6 +101,14 @@ namespace ATE::Jukebox
             else if (event == SM::KeyPadSM::Event_StopPlayback)
             {
                 EventQueue.Push(Event(Event_KeyPadStopPlayback, letter, number), 0);
+            }
+            else if (event == SM::KeyPadSM::Event_VolUp)
+            {
+                EventQueue.Push(Event(Event_KeyPadVolUp), 0);
+            }
+            else if (event == SM::KeyPadSM::Event_VolDown)
+            {
+                EventQueue.Push(Event(Event_KeyPadVolDown), 0);
             }
         }
 
@@ -263,12 +273,27 @@ namespace ATE::Jukebox
                 decoder = std::make_unique<Audio::WavDecoder>(std::move(file));
             }
 
+            AudioPlayer.SetVolume(CurrentVolume);
             AudioPlayer.Play(std::move(decoder));
         }
 
         void HandleKeyPadStopPlaybackEvent()
         {
             AudioPlayer.Stop();
+        }
+
+        void HandleKeyPadVolUpEvent()
+        {
+            CurrentVolume += 10;
+            std::clamp(CurrentVolume, int8_t {0}, int8_t {100});
+            AudioPlayer.SetVolume(CurrentVolume);
+        }
+
+        void HandleKeyPadVolDownEvent()
+        {
+            CurrentVolume -= 10;
+            std::clamp(CurrentVolume, int8_t{0}, int8_t{100});
+            AudioPlayer.SetVolume(CurrentVolume);
         }
 
         void PlayFailSound()
@@ -324,6 +349,12 @@ namespace ATE::Jukebox
             case Event_KeyPadStopPlayback:
                 HandleKeyPadStopPlaybackEvent();
                 break;
+            case Event_KeyPadVolUp:
+                HandleKeyPadVolUpEvent();
+                break;
+            case Event_KeyPadVolDown:
+                HandleKeyPadVolDownEvent();
+                break;
             case Event_NoEvent:
                 ATE_LOG_ERROR("Received empty event!");
                 break;
@@ -343,6 +374,7 @@ namespace ATE::Jukebox
 
         bool usbOk;
         bool playing;
+        int8_t CurrentVolume = 100;
 
         constexpr static std::size_t N_NUMBERS = 10;
         std::map<char, std::array<TrackType, N_NUMBERS>> trackMap;

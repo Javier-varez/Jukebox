@@ -9,7 +9,6 @@
  * Module: Audio
  */
 
-
 #ifndef ATE_I2S_AUDIO_PLAYER_H_
 #define ATE_I2S_AUDIO_PLAYER_H_
 
@@ -86,7 +85,6 @@ namespace ATE::Audio
 
         OSAL::Queue<Event> EventQueue;
 
-        std::uint8_t CurrentVolume;
         std::unique_ptr<IDecoder> CurrentDecoder;
 
         std::int16_t InternalBuffer[N_CHANNELS * N_SAMPLES_IN_INTERNAL_BUF];

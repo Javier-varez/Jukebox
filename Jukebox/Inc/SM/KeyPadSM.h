@@ -19,7 +19,6 @@
 
 #include <functional>
 
-
 namespace ATE::SM
 {
     class KeyPadSM : public OSAL::Task
@@ -32,12 +31,16 @@ namespace ATE::SM
             State_ReleasedLetter,
             State_SelectedNumber,
             State_DetectedPossibleStop,
+            State_VolUp,
+            State_VolDown,
         };
 
         enum EventType
         {
             Event_PlaySong = 0,
-            Event_StopPlayback
+            Event_StopPlayback,
+            Event_VolUp,
+            Event_VolDown
         };
 
         struct KeyEvent
