@@ -14,31 +14,31 @@
 
 namespace ATE::OSAL
 {
-	Semaphore::Semaphore(std::uint32_t max_count)
-	{
-		const osSemaphoreAttr_t attr =
-		{
-			name : nullptr,
-			attr_bits : 0,
-			cb_mem : 0,
-			cb_size : 0
-		};
-		impl = osSemaphoreNew(max_count, 0, &attr);
-	}
+    Semaphore::Semaphore(std::uint32_t max_count)
+    {
+        const osSemaphoreAttr_t attr =
+        {
+            name : nullptr,
+            attr_bits : 0,
+            cb_mem : 0,
+            cb_size : 0
+        };
+        impl = osSemaphoreNew(max_count, 0, &attr);
+    }
 
-	Semaphore::~Semaphore()
-	{
-		osSemaphoreDelete(impl);
-	}
+    Semaphore::~Semaphore()
+    {
+        osSemaphoreDelete(impl);
+    }
 
-	void Semaphore::Take(std::uint32_t timeout)
-	{
-		if (timeout == 0) timeout = portMAX_DELAY;
-		osSemaphoreAcquire(impl, timeout);
-	}
+    void Semaphore::Take(std::uint32_t timeout)
+    {
+        if (timeout == 0) timeout = portMAX_DELAY;
+        osSemaphoreAcquire(impl, timeout);
+    }
 
-	void Semaphore::Give()
-	{
-		osSemaphoreRelease(impl);
-	}
+    void Semaphore::Give()
+    {
+        osSemaphoreRelease(impl);
+    }
 }

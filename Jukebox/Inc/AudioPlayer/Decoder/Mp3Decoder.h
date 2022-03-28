@@ -18,23 +18,23 @@
 
 namespace ATE::Audio
 {
-	class Mp3Decoder : public IDecoder
-	{
-	public:
-		Mp3Decoder(std::unique_ptr<Device::IFile> f);
+    class Mp3Decoder : public IDecoder
+    {
+    public:
+        Mp3Decoder(std::unique_ptr<Device::IFile> f);
 
-		std::size_t Decode(std::int16_t* buffer, std::size_t nSamples) override;
-		std::uint32_t GetSampleFrequency() override;
+        std::size_t Decode(std::int16_t* buffer, std::size_t nSamples) override;
+        std::uint32_t GetSampleFrequency() override;
 
-	private:
-		TSpiritMP3Decoder impl;
-		TSpiritMP3Info info;
+    private:
+        TSpiritMP3Decoder impl;
+        TSpiritMP3Info info;
 
-		static unsigned int DecoderCallback(
-			    void * pMP3CompressedData,
-				unsigned int nMP3DataSizeInChars,
-				void * token );
-	};
+        static unsigned int DecoderCallback(
+                void * pMP3CompressedData,
+                unsigned int nMP3DataSizeInChars,
+                void * token );
+    };
 }
 
 #endif /* ATE_AUDIO_PLAYER_MP3_DECODER_H_ */

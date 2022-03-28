@@ -25,124 +25,124 @@
 
 extern "C"
 {
-	extern USBH_HandleTypeDef hUSB_Host;
+    extern USBH_HandleTypeDef hUSB_Host;
 }
 
 namespace ATE::Device
 {
-	USBHostMSC& USBHostMSC::GetInstance()
-	{
-		static USBHostMSC instance;
-		return instance;
-	}
+    USBHostMSC& USBHostMSC::GetInstance()
+    {
+        static USBHostMSC instance;
+        return instance;
+    }
 
-	void USBHostMSC::USBHostCallback(USBH_HandleTypeDef*, std::uint8_t state)
-	{
-		USBHostMSC& usb = GetInstance();
-		switch(state)
-		{
-			case HOST_USER_DISCONNECTION:
-				usb.SetAvailable(false);
-				usb.SetMounted(false);
-				break;
+    void USBHostMSC::USBHostCallback(USBH_HandleTypeDef*, std::uint8_t state)
+    {
+        USBHostMSC& usb = GetInstance();
+        switch(state)
+        {
+            case HOST_USER_DISCONNECTION:
+                usb.SetAvailable(false);
+                usb.SetMounted(false);
+                break;
 
-			case HOST_USER_CLASS_ACTIVE:
-				usb.SetAvailable(true);
-				break;
+            case HOST_USER_CLASS_ACTIVE:
+                usb.SetAvailable(true);
+                break;
 
-			case HOST_USER_CONNECTION:
-				break;
+            case HOST_USER_CONNECTION:
+                break;
 
-			default:
-				break;
-		}
-	}
+            default:
+                break;
+        }
+    }
 
-	bool USBHostMSC::Mount()
-	{
-		if (!IsAvailable())
-		{
-			return false;
-		}
-		else if (IsMounted())
-		{
-			return true;
-		}
+    bool USBHostMSC::Mount()
+    {
+        if (!IsAvailable())
+        {
+            return false;
+        }
+        else if (IsMounted())
+        {
+            return true;
+        }
 
-		if (f_mount(&FileSystem, USBHPath, 1) == FR_OK)
-		{
-			SetMounted(true);
-			return true;
-		}
-		return false;
-	}
+        if (f_mount(&FileSystem, USBHPath, 1) == FR_OK)
+        {
+            SetMounted(true);
+            return true;
+        }
+        return false;
+    }
 
-	bool USBHostMSC::Unmount()
-	{
-		if (!IsAvailable())
-		{
-			return false;
-		}
-		else if (!IsMounted())
-		{
-			return true;
-		}
+    bool USBHostMSC::Unmount()
+    {
+        if (!IsAvailable())
+        {
+            return false;
+        }
+        else if (!IsMounted())
+        {
+            return true;
+        }
 
-		if (f_mount(nullptr, USBHPath, 1) == FR_OK)
-		{
-			SetMounted(false);
-			return true;
-		}
-		return false;
-	}
+        if (f_mount(nullptr, USBHPath, 1) == FR_OK)
+        {
+            SetMounted(false);
+            return true;
+        }
+        return false;
+    }
 
-	std::unique_ptr<IFile> USBHostMSC::OpenFile(const char *path)
-	{
-		std::unique_ptr<FatFsFile> file = std::make_unique<FatFsFile>(path);
-		return file;
-	}
+    std::unique_ptr<IFile> USBHostMSC::OpenFile(const char *path)
+    {
+        std::unique_ptr<FatFsFile> file = std::make_unique<FatFsFile>(path);
+        return file;
+    }
 
-	std::unique_ptr<IDirReader> USBHostMSC::OpenDir(const char *path)
-	{
-		std::unique_ptr<FatFsDirReader> dirReader = std::make_unique<FatFsDirReader>(path);
-		return dirReader;
-	}
+    std::unique_ptr<IDirReader> USBHostMSC::OpenDir(const char *path)
+    {
+        std::unique_ptr<FatFsDirReader> dirReader = std::make_unique<FatFsDirReader>(path);
+        return dirReader;
+    }
 
-	void USBHostMSC::Initialize()
-	{
-		OSAL::UniqueLock l (initializedMutex);
-		if (initialized) return;
+    void USBHostMSC::Initialize()
+    {
+        OSAL::UniqueLock l (initializedMutex);
+        if (initialized) return;
 
-		FATFS_LinkDriver(&USBH_Driver, USBHPath);
-		USBHPath[4] = '\0';
+        FATFS_LinkDriver(&USBH_Driver, USBHPath);
+        USBHPath[4] = '\0';
 
         ATE_LOG_DEBUG(
-				"Registered USB MSC as Drive %s",
-				USBHPath
-			);
+                "Registered USB MSC as Drive %s",
+                USBHPath
+            );
 
-		if (USBH_Init(&hUSB_Host, USBHostMSC::USBHostCallback, HOST_FS) != USBH_OK)
-		{
+        if (USBH_Init(&hUSB_Host, USBHostMSC::USBHostCallback, HOST_FS) != USBH_OK)
+        {
             ATE_LOG_ERROR("Unable to initialize USB FS");
-			return;
-		}
-		if (USBH_RegisterClass(&hUSB_Host, USBH_MSC_CLASS) != USBH_OK)
-		{
+            return;
+        }
+        if (USBH_RegisterClass(&hUSB_Host, USBH_MSC_CLASS) != USBH_OK)
+        {
             ATE_LOG_ERROR("Unable to register MSC Class");
-			return;
-		}
-		if (USBH_Start(&hUSB_Host) != USBH_OK)
-		{
+            return;
+        }
+        if (USBH_Start(&hUSB_Host) != USBH_OK)
+        {
             ATE_LOG_ERROR("Unable to start USB Host operation");
-			return;
-		}
+            return;
+        }
 
-		initialized = true;
-	}
+        initialized = true;
+    }
 
-	USBHostMSC::USBHostMSC()
-	{
+    USBHostMSC::USBHostMSC()
+    {
 
-	}
+    }
 
 }

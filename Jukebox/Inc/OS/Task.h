@@ -17,21 +17,21 @@
 
 namespace ATE::OSAL
 {
-	class Task
-	{
-	public:
-		Task(const char *name, osPriority_t prio, std::size_t stackSize);
+    class Task
+    {
+    public:
+        Task(const char *name, osPriority_t prio, std::size_t stackSize);
 
-		static void Delay(std::uint32_t ms);
+        static void Delay(std::uint32_t ms);
 
-	protected:
-		virtual void Init() = 0;
-		virtual bool Run() = 0;
+    protected:
+        virtual void Init() = 0;
+        virtual bool Run() = 0;
 
-	private:
-		osThreadId_t tid;
-		static void Impl(void*);
-	};
+    private:
+        osThreadId_t tid;
+        static void Impl(void*);
+    };
 }
 
 #endif /* ATE_OSAL_TASK_H_ */

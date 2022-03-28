@@ -14,33 +14,33 @@
 
 namespace ATE::Audio
 {
-	void IPlayer::Notify(State state)
-	{
-		OSAL::UniqueLock l(eventCbMutex);
-		if (eventCb != nullptr)
-		{
-			eventCb(state);
-		}
-	}
+    void IPlayer::Notify(State state)
+    {
+        OSAL::UniqueLock l(eventCbMutex);
+        if (eventCb != nullptr)
+        {
+            eventCb(state);
+        }
+    }
 
-	void IPlayer::Subscribe(AudioEventCb_t cb)
-	{
-		OSAL::UniqueLock l(eventCbMutex);
-		eventCb = cb;
-	}
+    void IPlayer::Subscribe(AudioEventCb_t cb)
+    {
+        OSAL::UniqueLock l(eventCbMutex);
+        eventCb = cb;
+    }
 
-	IPlayer::State IPlayer::GetState()
-	{
-		OSAL::UniqueLock l(StateMutex);
-		return CurrentState;
-	}
+    IPlayer::State IPlayer::GetState()
+    {
+        OSAL::UniqueLock l(StateMutex);
+        return CurrentState;
+    }
 
-	void IPlayer::SetState(State state)
-	{
-		{
-			OSAL::UniqueLock l(StateMutex);
-			CurrentState = state;
-		}
-		Notify(state);
-	}
+    void IPlayer::SetState(State state)
+    {
+        {
+            OSAL::UniqueLock l(StateMutex);
+            CurrentState = state;
+        }
+        Notify(state);
+    }
 }

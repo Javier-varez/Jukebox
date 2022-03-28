@@ -17,19 +17,19 @@
 
 namespace ATE::OSAL
 {
-	class Mutex
-	{
-	public:
-		Mutex();
-		~Mutex();
-		void Lock(std::uint32_t timeout = 0);
-		void Unlock();
+    class Mutex
+    {
+    public:
+        Mutex();
+        ~Mutex();
+        void Lock(std::uint32_t timeout = 0);
+        void Unlock();
 
-		Mutex(const Mutex&) = delete;
-		Mutex(Mutex&&) = delete;
-	private:
-		osMutexId_t impl;
-	};
+        Mutex(const Mutex&) = delete;
+        Mutex(Mutex&&) = delete;
+    private:
+        osMutexId_t impl;
+    };
 }
 
 #endif /* ATE_OSAL_MUTEX_H_ */

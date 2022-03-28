@@ -13,14 +13,14 @@
 
 namespace ATE::OSAL
 {
-	UniqueLock::UniqueLock(Mutex &mutex):
-			impl(mutex)
-	{
-		impl.Lock();
-	}
+    UniqueLock::UniqueLock(Mutex &mutex):
+            impl(mutex)
+    {
+        impl.Lock();
+    }
 
-	UniqueLock::~UniqueLock()
-	{
-		impl.Unlock();
-	}
+    UniqueLock::~UniqueLock()
+    {
+        impl.Unlock();
+    }
 }

@@ -14,8 +14,8 @@
 
 namespace ATE::Audio
 {
-	IDecoder::IDecoder(std::unique_ptr<Device::IFile> f) :
-			file (std::move(f))
-	{
-	}
+    IDecoder::IDecoder(std::unique_ptr<Device::IFile> f) :
+            file (std::move(f))
+    {
+    }
 }

@@ -22,53 +22,53 @@
 
 namespace ATE::Device
 {
-	class IMassStorageDevice
-	{
-	public:
-		enum Event
-		{
-			MSD_Ready = 0,
-			MSD_Removed
-		};
+    class IMassStorageDevice
+    {
+    public:
+        enum Event
+        {
+            MSD_Ready = 0,
+            MSD_Removed
+        };
 
-		using eventCb_t = std::function<void(Event)>;
+        using eventCb_t = std::function<void(Event)>;
 
-		void Subscribe(const eventCb_t& eventCb)
-		{
-			OSAL::UniqueLock l(callbackMutex);
-			callback = eventCb;
-		}
+        void Subscribe(const eventCb_t& eventCb)
+        {
+            OSAL::UniqueLock l(callbackMutex);
+            callback = eventCb;
+        }
 
-		IMassStorageDevice();
+        IMassStorageDevice();
 
-		bool IsAvailable();
-		bool IsMounted();
+        bool IsAvailable();
+        bool IsMounted();
 
-		virtual void Initialize() = 0;
+        virtual void Initialize() = 0;
 
-		virtual bool Mount() = 0;
-		virtual bool Unmount() = 0;
+        virtual bool Mount() = 0;
+        virtual bool Unmount() = 0;
 
-		virtual std::unique_ptr<IFile> OpenFile(const char *path) = 0;
-		virtual std::unique_ptr<IDirReader> OpenDir(const char *path) = 0;
+        virtual std::unique_ptr<IFile> OpenFile(const char *path) = 0;
+        virtual std::unique_ptr<IDirReader> OpenDir(const char *path) = 0;
 
-		virtual ~IMassStorageDevice() = default;
+        virtual ~IMassStorageDevice() = default;
 
-	private:
-		bool available;
-		bool mounted;
-		OSAL::Mutex availableMutex;
-		OSAL::Mutex mountedMutex;
+    private:
+        bool available;
+        bool mounted;
+        OSAL::Mutex availableMutex;
+        OSAL::Mutex mountedMutex;
 
-		eventCb_t callback;
-		OSAL::Mutex callbackMutex;
+        eventCb_t callback;
+        OSAL::Mutex callbackMutex;
 
-		void Notify(Event event);
+        void Notify(Event event);
 
-	protected:
-		void SetAvailable(bool);
-		void SetMounted(bool);
-	};
+    protected:
+        void SetAvailable(bool);
+        void SetMounted(bool);
+    };
 }
 
 

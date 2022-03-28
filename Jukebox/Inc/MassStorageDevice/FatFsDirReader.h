@@ -18,18 +18,18 @@
 
 namespace ATE::Device
 {
-	class FatFsDirReader : public IDirReader
-	{
-	public:
-		FatFsDirReader(const char *path);
-		~FatFsDirReader();
+    class FatFsDirReader : public IDirReader
+    {
+    public:
+        FatFsDirReader(const char *path);
+        ~FatFsDirReader();
 
-		FileInfo ReadNext() override;
+        FileInfo ReadNext() override;
 
-	private:
-		DIR directory;
-		FILINFO fileinfo;
-	};
+    private:
+        DIR directory;
+        FILINFO fileinfo;
+    };
 }
 
 #endif /* ATE_DEVICE_FATFSDIRREADER_H_ */

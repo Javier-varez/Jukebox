@@ -16,35 +16,35 @@
 
 namespace ATE::Device
 {
-	FatFsDirReader::FatFsDirReader(const char *path)
-	{
-		if (f_opendir(&directory,  path) != FR_OK)
-		{
+    FatFsDirReader::FatFsDirReader(const char *path)
+    {
+        if (f_opendir(&directory,  path) != FR_OK)
+        {
             ATE_LOG_WARNING("Unable to find path %s", path);
-			return;
-		}
-	}
+            return;
+        }
+    }
 
-	FatFsDirReader::~FatFsDirReader()
-	{
-		f_closedir(&directory);
-	}
+    FatFsDirReader::~FatFsDirReader()
+    {
+        f_closedir(&directory);
+    }
 
-	FileInfo FatFsDirReader::ReadNext()
-	{
-		FileInfo info;
-		if (f_readdir(&directory, &fileinfo) == FR_OK)
-		{
-			if (fileinfo.fname[0] == '\0')
-			{
-				return info;
-			}
+    FileInfo FatFsDirReader::ReadNext()
+    {
+        FileInfo info;
+        if (f_readdir(&directory, &fileinfo) == FR_OK)
+        {
+            if (fileinfo.fname[0] == '\0')
+            {
+                return info;
+            }
 
-			info.type = (fileinfo.fattrib & AM_DIR) != 0 ?
-					FileInfo::TYPE_DIRECTORY : FileInfo::TYPE_FILE;
-			std::strncpy(info.path, fileinfo.fname, FileInfo::PATH_MAX_LENGTH);
-		}
-		return info;
-	}
+            info.type = (fileinfo.fattrib & AM_DIR) != 0 ?
+                    FileInfo::TYPE_DIRECTORY : FileInfo::TYPE_FILE;
+            std::strncpy(info.path, fileinfo.fname, FileInfo::PATH_MAX_LENGTH);
+        }
+        return info;
+    }
 
 }

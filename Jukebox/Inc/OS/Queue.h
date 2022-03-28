@@ -19,51 +19,51 @@
 namespace ATE::OSAL
 {
 
-	template <class T>
-	class Queue
-	{
-	public:
-		Queue(std::size_t maxSize)
-		{
-			static_assert(std::is_trivially_copyable<T>::value,
-				"Queues can only contain trivially copyable types");
+    template <class T>
+    class Queue
+    {
+    public:
+        Queue(std::size_t maxSize)
+        {
+            static_assert(std::is_trivially_copyable<T>::value,
+                "Queues can only contain trivially copyable types");
 
-			const osMessageQueueAttr_t attr =
-			{
-				name : nullptr,
-				attr_bits : 0,
-				cb_mem : nullptr,
-				cb_size : 0,
-				mq_mem : nullptr,
-				mq_size : 0
-			};
-			impl = osMessageQueueNew (maxSize, sizeof(T), &attr);
-			/* TODO Handle null ptr */
-		}
+            const osMessageQueueAttr_t attr =
+            {
+                name : nullptr,
+                attr_bits : 0,
+                cb_mem : nullptr,
+                cb_size : 0,
+                mq_mem : nullptr,
+                mq_size : 0
+            };
+            impl = osMessageQueueNew (maxSize, sizeof(T), &attr);
+            /* TODO Handle null ptr */
+        }
 
-		void Push(const T& element, std::uint32_t timeout = osWaitForever)
-		{
-			osMessageQueuePut(impl, &element, 0, timeout);
-		}
+        void Push(const T& element, std::uint32_t timeout = osWaitForever)
+        {
+            osMessageQueuePut(impl, &element, 0, timeout);
+        }
 
-		bool Pop(T& element, std::uint32_t timeout = osWaitForever)
-		{
-			return osMessageQueueGet(impl, &element, nullptr, timeout) == osOK;
-		}
+        bool Pop(T& element, std::uint32_t timeout = osWaitForever)
+        {
+            return osMessageQueueGet(impl, &element, nullptr, timeout) == osOK;
+        }
 
-		void RemoveAll()
-		{
-			osMessageQueueReset(impl);
-		}
+        void RemoveAll()
+        {
+            osMessageQueueReset(impl);
+        }
 
-		~Queue()
-		{
-			osMessageQueueDelete(impl);
-		}
+        ~Queue()
+        {
+            osMessageQueueDelete(impl);
+        }
 
-	private:
-		osMessageQueueId_t impl;
-	};
+    private:
+        osMessageQueueId_t impl;
+    };
 
 }
 

@@ -22,8 +22,8 @@
 
 namespace ATE::Logger
 {
-	Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger();
-	void SetLevel(Postform::LogLevel level);
+    Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger();
+    void SetLevel(Postform::LogLevel level);
 }
 
 #endif /* ATE_LOGGER_LOGGER_H_ */

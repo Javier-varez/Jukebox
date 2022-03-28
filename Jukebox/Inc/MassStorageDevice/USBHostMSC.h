@@ -19,27 +19,27 @@
 
 namespace ATE::Device
 {
-	class USBHostMSC : public IMassStorageDevice
-	{
-	public:
-		static USBHostMSC& GetInstance();
+    class USBHostMSC : public IMassStorageDevice
+    {
+    public:
+        static USBHostMSC& GetInstance();
 
-		void Initialize() override;
-		bool Mount() override;
-		bool Unmount() override;
-		std::unique_ptr<IFile> OpenFile(const char *path) override;
-		std::unique_ptr<IDirReader> OpenDir(const char *path) override;
+        void Initialize() override;
+        bool Mount() override;
+        bool Unmount() override;
+        std::unique_ptr<IFile> OpenFile(const char *path) override;
+        std::unique_ptr<IDirReader> OpenDir(const char *path) override;
 
-	private:
-		USBHostMSC();
-		static void USBHostCallback(USBH_HandleTypeDef*, std::uint8_t);
+    private:
+        USBHostMSC();
+        static void USBHostCallback(USBH_HandleTypeDef*, std::uint8_t);
 
-		char USBHPath[5];
-		FATFS FileSystem;
+        char USBHPath[5];
+        FATFS FileSystem;
 
-		bool initialized;
-		OSAL::Mutex initializedMutex;
-	};
+        bool initialized;
+        OSAL::Mutex initializedMutex;
+    };
 
 }
 

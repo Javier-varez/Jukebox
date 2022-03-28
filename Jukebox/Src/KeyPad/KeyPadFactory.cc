@@ -14,9 +14,9 @@
 
 namespace ATE::Device
 {
-	IKeyPad& KeyPadFactory::GetAnalogKeypad()
-	{
-		static KeyPadAnalog analog;
-		return analog;
-	}
+    IKeyPad& KeyPadFactory::GetAnalogKeypad()
+    {
+        static KeyPadAnalog analog;
+        return analog;
+    }
 }

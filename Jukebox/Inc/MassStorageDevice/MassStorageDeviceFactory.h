@@ -16,11 +16,11 @@
 
 namespace ATE::Device
 {
-	class MassStorageDeviceFactory
-	{
-	public:
-		static IMassStorageDevice& GetUSBHostStorage();
-	};
+    class MassStorageDeviceFactory
+    {
+    public:
+        static IMassStorageDevice& GetUSBHostStorage();
+    };
 }
 
 #endif /* ATE_DEVICE_MASS_STORAGE_DEVICE_FACTORY_H_ */

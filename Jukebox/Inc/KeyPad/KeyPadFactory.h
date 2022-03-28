@@ -16,11 +16,11 @@
 
 namespace ATE::Device
 {
-	class KeyPadFactory
-	{
-	public:
-		static IKeyPad& GetAnalogKeypad();
-	};
+    class KeyPadFactory
+    {
+    public:
+        static IKeyPad& GetAnalogKeypad();
+    };
 }
 
 #endif /* ATE_KEYPADFACTORY_H_ */

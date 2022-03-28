@@ -38,13 +38,13 @@ DECLARE_POSTFORM_CONFIG(.timestamp_frequency = 1'000);
 
 namespace ATE::Logger
 {
-	Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger()
-	{
-		return &logger;
-	}
+    Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger()
+    {
+        return &logger;
+    }
 
-	void SetLevel(Postform::LogLevel level)
-	{
-		logger.setLevel(level);
-	}
+    void SetLevel(Postform::LogLevel level)
+    {
+        logger.setLevel(level);
+    }
 }

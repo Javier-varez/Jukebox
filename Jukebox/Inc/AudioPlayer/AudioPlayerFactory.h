@@ -16,11 +16,11 @@
 
 namespace ATE::Audio
 {
-	class PlayerFactory
-	{
-	public:
-		static IPlayer& GetI2SPlayer();
-	};
+    class PlayerFactory
+    {
+    public:
+        static IPlayer& GetI2SPlayer();
+    };
 }
 
 #endif /* ATE_AUDIO_PLAYER_FACTORY_H_ */

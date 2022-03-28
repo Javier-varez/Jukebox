@@ -16,19 +16,19 @@
 
 namespace ATE::OSAL
 {
-	class UniqueLock
-	{
-	public:
-		UniqueLock(Mutex &mutex);
-		~UniqueLock();
+    class UniqueLock
+    {
+    public:
+        UniqueLock(Mutex &mutex);
+        ~UniqueLock();
 
-		UniqueLock() = delete;
-		UniqueLock(const UniqueLock&) = delete;
-		UniqueLock(UniqueLock&&) = delete;
+        UniqueLock() = delete;
+        UniqueLock(const UniqueLock&) = delete;
+        UniqueLock(UniqueLock&&) = delete;
 
-	private:
-		Mutex& impl;
-	};
+    private:
+        Mutex& impl;
+    };
 }
 
 #endif /* ATE_OSAL_UNIQUE_LOCK_H_ */

@@ -17,13 +17,13 @@
 
 namespace ATE::Device
 {
-	class IDirReader
-	{
-	public:
-		virtual FileInfo ReadNext() = 0;
+    class IDirReader
+    {
+    public:
+        virtual FileInfo ReadNext() = 0;
 
-		virtual ~IDirReader() = default;
-	};
+        virtual ~IDirReader() = default;
+    };
 }
 
 #endif /* ATE_DEVICE_IDIRREADER_H_ */

@@ -21,17 +21,17 @@
 
 namespace ATE::Audio
 {
-	class IDecoder
-	{
-	public:
-		IDecoder(std::unique_ptr<Device::IFile> f);
-		virtual std::size_t Decode(std::int16_t* buffer, std::size_t nSamples) = 0;
+    class IDecoder
+    {
+    public:
+        IDecoder(std::unique_ptr<Device::IFile> f);
+        virtual std::size_t Decode(std::int16_t* buffer, std::size_t nSamples) = 0;
 
-		virtual std::uint32_t GetSampleFrequency() = 0;
+        virtual std::uint32_t GetSampleFrequency() = 0;
 
-	protected:
-		std::unique_ptr<Device::IFile> file;
-	};
+    protected:
+        std::unique_ptr<Device::IFile> file;
+    };
 }
 
 

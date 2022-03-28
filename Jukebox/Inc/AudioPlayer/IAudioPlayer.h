@@ -24,40 +24,40 @@
 
 namespace ATE::Audio
 {
-	class IPlayer
-	{
-	public:
-		enum State
-		{
-			State_Idle,
-			State_Playing,
-			State_Paused,
-		};
+    class IPlayer
+    {
+    public:
+        enum State
+        {
+            State_Idle,
+            State_Playing,
+            State_Paused,
+        };
 
-		using AudioEventCb_t = std::function<void(State)>;
+        using AudioEventCb_t = std::function<void(State)>;
 
-		void Subscribe(AudioEventCb_t cb);
-		State GetState();
+        void Subscribe(AudioEventCb_t cb);
+        State GetState();
 
 
-		virtual bool Play(std::unique_ptr<IDecoder> decoder) = 0;
-		virtual void Pause() = 0;
-		virtual void Resume() = 0;
-		virtual void Stop() = 0;
+        virtual bool Play(std::unique_ptr<IDecoder> decoder) = 0;
+        virtual void Pause() = 0;
+        virtual void Resume() = 0;
+        virtual void Stop() = 0;
 
-		virtual void SetVolume(std::uint8_t volume) = 0;
+        virtual void SetVolume(std::uint8_t volume) = 0;
 
-	private:
-		State CurrentState = State_Idle;
+    private:
+        State CurrentState = State_Idle;
 
-		AudioEventCb_t eventCb;
-		OSAL::Mutex eventCbMutex;
-		OSAL::Mutex StateMutex;
+        AudioEventCb_t eventCb;
+        OSAL::Mutex eventCbMutex;
+        OSAL::Mutex StateMutex;
 
-	protected:
-		void Notify(State event);
-		void SetState(State state);
-	};
+    protected:
+        void Notify(State event);
+        void SetState(State state);
+    };
 }
 
 #endif /* ATE_IAUDIO_PLAYER_H_ */

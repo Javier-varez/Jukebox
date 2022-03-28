@@ -16,14 +16,14 @@
 
 namespace ATE::Device
 {
-	class IFile
-	{
-	public:
-		virtual std::size_t Read(std::uint8_t* buffer, std::size_t length) = 0;
-		virtual bool Exists();
+    class IFile
+    {
+    public:
+        virtual std::size_t Read(std::uint8_t* buffer, std::size_t length) = 0;
+        virtual bool Exists();
 
-		virtual ~IFile() = default;
-	};
+        virtual ~IFile() = default;
+    };
 }
 
 #endif /* ATE_DEVICE_IFILE_H_ */

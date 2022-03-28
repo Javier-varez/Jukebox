@@ -17,17 +17,17 @@
 
 namespace ATE::OSAL
 {
-	class Semaphore
-	{
-	public:
-		Semaphore(std::uint32_t max_count = 1);
-		~Semaphore();
-		void Take(std::uint32_t timeout = 0);
-		void Give();
+    class Semaphore
+    {
+    public:
+        Semaphore(std::uint32_t max_count = 1);
+        ~Semaphore();
+        void Take(std::uint32_t timeout = 0);
+        void Give();
 
-	private:
-		osSemaphoreId_t impl;
-	};
+    private:
+        osSemaphoreId_t impl;
+    };
 }
 
 #endif /* ATE_OSAL_SEMAPHORE_H_ */

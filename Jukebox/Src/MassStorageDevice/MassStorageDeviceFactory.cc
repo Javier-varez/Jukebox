@@ -14,11 +14,11 @@
 
 namespace ATE::Device
 {
-	IMassStorageDevice& MassStorageDeviceFactory::GetUSBHostStorage()
-	{
-		USBHostMSC& msc = USBHostMSC::GetInstance();
-		msc.Initialize();
-		return msc;
-	}
+    IMassStorageDevice& MassStorageDeviceFactory::GetUSBHostStorage()
+    {
+        USBHostMSC& msc = USBHostMSC::GetInstance();
+        msc.Initialize();
+        return msc;
+    }
 
 }

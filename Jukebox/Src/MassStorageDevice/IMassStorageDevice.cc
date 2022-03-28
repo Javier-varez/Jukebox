@@ -13,56 +13,56 @@
 
 namespace ATE::Device
 {
-	IMassStorageDevice::IMassStorageDevice() :
-		available(false),
-		mounted(false)
-	{
+    IMassStorageDevice::IMassStorageDevice() :
+        available(false),
+        mounted(false)
+    {
 
-	}
+    }
 
-	bool IMassStorageDevice::IsAvailable()
-	{
-		OSAL::UniqueLock l (availableMutex);
-		return available;
-	}
+    bool IMassStorageDevice::IsAvailable()
+    {
+        OSAL::UniqueLock l (availableMutex);
+        return available;
+    }
 
-	void IMassStorageDevice::SetAvailable(bool state)
-	{
-		{
-			OSAL::UniqueLock l (availableMutex);
+    void IMassStorageDevice::SetAvailable(bool state)
+    {
+        {
+            OSAL::UniqueLock l (availableMutex);
 
-			if (available == state)
-				return;
+            if (available == state)
+                return;
 
-			available = state;
-		}
+            available = state;
+        }
 
-		if (state)
-		{
-			Notify(IMassStorageDevice::MSD_Ready);
-		}
-		else
-		{
-			Notify(IMassStorageDevice::MSD_Removed);
-		}
-	}
+        if (state)
+        {
+            Notify(IMassStorageDevice::MSD_Ready);
+        }
+        else
+        {
+            Notify(IMassStorageDevice::MSD_Removed);
+        }
+    }
 
-	bool IMassStorageDevice::IsMounted()
-	{
-		OSAL::UniqueLock l (mountedMutex);
-		return mounted;
-	}
+    bool IMassStorageDevice::IsMounted()
+    {
+        OSAL::UniqueLock l (mountedMutex);
+        return mounted;
+    }
 
-	void IMassStorageDevice::SetMounted(bool state)
-	{
-		OSAL::UniqueLock l (mountedMutex);
-		mounted = state;
-	}
+    void IMassStorageDevice::SetMounted(bool state)
+    {
+        OSAL::UniqueLock l (mountedMutex);
+        mounted = state;
+    }
 
-	void IMassStorageDevice::Notify(IMassStorageDevice::Event event)
-	{
-		OSAL::UniqueLock l(callbackMutex);
-		if (callback != nullptr)
-			callback(event);
-	}
+    void IMassStorageDevice::Notify(IMassStorageDevice::Event event)
+    {
+        OSAL::UniqueLock l(callbackMutex);
+        if (callback != nullptr)
+            callback(event);
+    }
 }

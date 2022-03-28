@@ -14,28 +14,28 @@
 
 namespace ATE::Device
 {
-	FlashFile::FlashFile(const std::uint8_t *data, std::size_t length) :
-			Ptr(data),
-			FileLength(length),
-			Offset(0)
-	{
+    FlashFile::FlashFile(const std::uint8_t *data, std::size_t length) :
+            Ptr(data),
+            FileLength(length),
+            Offset(0)
+    {
 
-	}
+    }
 
-	std::size_t FlashFile::Read(std::uint8_t* buffer, std::size_t length)
-	{
-		std::size_t actualLength = ((FileLength - Offset)) > length ?
-										length :
-										(FileLength - Offset);
+    std::size_t FlashFile::Read(std::uint8_t* buffer, std::size_t length)
+    {
+        std::size_t actualLength = ((FileLength - Offset)) > length ?
+                                        length :
+                                        (FileLength - Offset);
 
-		std::memcpy(buffer, &Ptr[Offset], actualLength);
-		Offset += actualLength;
+        std::memcpy(buffer, &Ptr[Offset], actualLength);
+        Offset += actualLength;
 
-		return actualLength;
-	}
+        return actualLength;
+    }
 
-	bool FlashFile::Exists()
-	{
-		return true;
-	}
+    bool FlashFile::Exists()
+    {
+        return true;
+    }
 }

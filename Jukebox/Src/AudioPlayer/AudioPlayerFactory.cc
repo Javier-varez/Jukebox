@@ -14,8 +14,8 @@
 
 namespace ATE::Audio
 {
-	IPlayer& PlayerFactory::GetI2SPlayer()
-	{
-		return I2SPlayer::GetPlayer();
-	}
+    IPlayer& PlayerFactory::GetI2SPlayer()
+    {
+        return I2SPlayer::GetPlayer();
+    }
 }

@@ -17,39 +17,39 @@
 
 namespace ATE::Device
 {
-	class IKeyPad
-	{
-	public:
-		enum KeyState
-		{
-			KEY_EVENT_NONE = 0,
-			KEY_RELEASED,
-			KEY_PRESSED,
-		};
+    class IKeyPad
+    {
+    public:
+        enum KeyState
+        {
+            KEY_EVENT_NONE = 0,
+            KEY_RELEASED,
+            KEY_PRESSED,
+        };
 
-		using KeyChangedCallback = std::function<bool(char key, KeyState state)>;
+        using KeyChangedCallback = std::function<bool(char key, KeyState state)>;
 
-		void Subscribe(const KeyChangedCallback& cb)
-		{
-			OSAL::UniqueLock lock(cbMutex);
-			this->cb = cb;
-		}
+        void Subscribe(const KeyChangedCallback& cb)
+        {
+            OSAL::UniqueLock lock(cbMutex);
+            this->cb = cb;
+        }
 
-	protected:
-		bool Notify(char key, KeyState state)
-		{
-			OSAL::UniqueLock lock(cbMutex);
-			if (cb != nullptr)
-			{
-				return cb(key, state);
-			}
-			return false;
-		}
+    protected:
+        bool Notify(char key, KeyState state)
+        {
+            OSAL::UniqueLock lock(cbMutex);
+            if (cb != nullptr)
+            {
+                return cb(key, state);
+            }
+            return false;
+        }
 
-	private:
-		KeyChangedCallback cb;
-		OSAL::Mutex cbMutex;
-	};
+    private:
+        KeyChangedCallback cb;
+        OSAL::Mutex cbMutex;
+    };
 }
 
 #endif /* ATE_KEYPAD_H_ */

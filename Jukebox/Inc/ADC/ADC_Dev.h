@@ -22,49 +22,49 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 
 namespace ATE::Device
 {
-	class ADC_Dev
-	{
-	public:
-		enum Source
-		{
-			SOURCE_ADC1
-		};
+    class ADC_Dev
+    {
+    public:
+        enum Source
+        {
+            SOURCE_ADC1
+        };
 
-		enum Channel
-		{
-			Channel_0 = 0,
-			Channel_1,
-			Channel_2,
-			Channel_3,
-			Channel_4,
-			Channel_5,
-			Channel_6,
-			Channel_7,
-			Channel_8,
-			Channel_9,
-			Channel_10,
-			Channel_11,
-			Channel_12,
-			Channel_13,
-			Channel_14,
-			Channel_15,
-		};
+        enum Channel
+        {
+            Channel_0 = 0,
+            Channel_1,
+            Channel_2,
+            Channel_3,
+            Channel_4,
+            Channel_5,
+            Channel_6,
+            Channel_7,
+            Channel_8,
+            Channel_9,
+            Channel_10,
+            Channel_11,
+            Channel_12,
+            Channel_13,
+            Channel_14,
+            Channel_15,
+        };
 
-		static ADC_Dev& GetDevice(Source);
+        static ADC_Dev& GetDevice(Source);
 
-		bool SelectChannel(ADC_Dev::Channel ch);
-		std::uint32_t GetResolution();
-		std::tuple<std::uint32_t, bool> PerformMeasurement();
+        bool SelectChannel(ADC_Dev::Channel ch);
+        std::uint32_t GetResolution();
+        std::tuple<std::uint32_t, bool> PerformMeasurement();
 
-	private:
-		ADC_HandleTypeDef *hadc;
-		OSAL::Semaphore conversionSemaphore;
+    private:
+        ADC_HandleTypeDef *hadc;
+        OSAL::Semaphore conversionSemaphore;
 
-		ADC_Dev(Source);
-		bool StartConversion();
+        ADC_Dev(Source);
+        bool StartConversion();
 
-		friend void ::HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
-	};
+        friend void ::HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+    };
 
 }
 
