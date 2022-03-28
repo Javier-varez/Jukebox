@@ -18,4 +18,4 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build firmware
-      run: source bootstrap.sh && make -j
+      run: source bootstrap.sh && cmake -S . -B build/ -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain.cmake -DCMAKE_SYSTEM_NAME=Generic && cmake --build build

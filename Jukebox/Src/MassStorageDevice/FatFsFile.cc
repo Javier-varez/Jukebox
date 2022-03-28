@@ -18,9 +18,7 @@ namespace ATE::Device
 	{
 		if (f_open(&file, path, FA_READ | FA_WRITE) != FR_OK)
 		{
-			ATE::Logger::GetLogger().Log(
-					ATE::Logger::LogLevel_WARNING,
-					"Couldn't open file %s\n", path);
+            ATE_LOG_WARNING("Couldn't open file %s", path);
 			exists = false;
 		}
 		exists = true;
@@ -46,5 +44,3 @@ namespace ATE::Device
 		return exists;
 	}
 }
-
-

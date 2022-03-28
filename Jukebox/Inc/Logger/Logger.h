@@ -12,48 +12,18 @@
 #ifndef ATE_LOGGER_LOGGER_H_
 #define ATE_LOGGER_LOGGER_H_
 
-#include "OS/Task.h"
-#include "OS/Mutex.h"
-#include "OS/Queue.h"
+#include "postform/rtt/transport.h"
+#include "postform/serial_logger.h"
 
-namespace ATE
+#define ATE_LOG_DEBUG(...) LOG_DEBUG(::ATE::Logger::GetLogger(), __VA_ARGS__)
+#define ATE_LOG_INFO(...) LOG_INFO(::ATE::Logger::GetLogger(), __VA_ARGS__)
+#define ATE_LOG_WARNING(...) LOG_WARNING(::ATE::Logger::GetLogger(), __VA_ARGS__)
+#define ATE_LOG_ERROR(...) LOG_ERROR(::ATE::Logger::GetLogger(), __VA_ARGS__)
+
+namespace ATE::Logger
 {
-	class Logger : public OSAL::Task
-	{
-	public:
-		enum LogLevel
-		{
-			LogLevel_DEBUG = 0,
-			LogLevel_INFO,
-			LogLevel_WARNING,
-			LogLevel_ERROR,
-		};
-		struct LogMsg
-		{
-			constexpr static std::size_t MAX_LENGTH = 100;
-			char msg[MAX_LENGTH];
-		};
-
-
-		static Logger& GetLogger();
-
-		void SetLevel(LogLevel level);
-		void Log(LogLevel level, const char* format, ... );
-
-		Logger(const Logger&) = delete;
-		Logger operator=(const Logger&) = delete;
-		Logger(Logger&&) = delete;
-	private:
-		Logger();
-		void Init() override;
-		bool Run() override;
-
-		LogLevel level;
-		OSAL::Queue<LogMsg> queue;
-		OSAL::Mutex mutex;
-	};
+	Postform::SerialLogger<Postform::Rtt::Transport>* GetLogger();
+	void SetLevel(Postform::LogLevel level);
 }
-
-
 
 #endif /* ATE_LOGGER_LOGGER_H_ */

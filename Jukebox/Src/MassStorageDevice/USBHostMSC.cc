@@ -116,31 +116,24 @@ namespace ATE::Device
 		FATFS_LinkDriver(&USBH_Driver, USBHPath);
 		USBHPath[4] = '\0';
 
-		Logger::GetLogger().Log(
-				Logger::LogLevel_DEBUG,
-				"Registered USB MSC as Drive %s\n",
+        ATE_LOG_DEBUG(
+				"Registered USB MSC as Drive %s",
 				USBHPath
 			);
 
 		if (USBH_Init(&hUSB_Host, USBHostMSC::USBHostCallback, HOST_FS) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to initialize USB FS\n");
+            ATE_LOG_ERROR("Unable to initialize USB FS");
 			return;
 		}
 		if (USBH_RegisterClass(&hUSB_Host, USBH_MSC_CLASS) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to register MSC Class\n");
+            ATE_LOG_ERROR("Unable to register MSC Class");
 			return;
 		}
 		if (USBH_Start(&hUSB_Host) != USBH_OK)
 		{
-			Logger::GetLogger().Log(
-					Logger::LogLevel_ERROR,
-					"Unable to start USB Host operation\n");
+            ATE_LOG_ERROR("Unable to start USB Host operation");
 			return;
 		}
 
@@ -153,4 +146,3 @@ namespace ATE::Device
 	}
 
 }
-
