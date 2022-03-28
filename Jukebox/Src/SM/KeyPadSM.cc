@@ -57,7 +57,7 @@ namespace ATE::SM
 	bool KeyPadSM::KeyPadCb(char key, Device::IKeyPad::KeyState state)
 	{
 		EventQueue.Push(KeyEvent(key, state), 0);
-    ATE_LOG_DEBUG("Key %hhu, state %d", key, (int)state);
+        ATE_LOG_DEBUG("Key %c, state %d", key, (int)state);
 		return true;
 	}
 
@@ -86,7 +86,7 @@ namespace ATE::SM
 			if ((event.state == Device::IKeyPad::KEY_PRESSED) && IsLetter(event.key))
 			{
 				letter = event.key;
-                ATE_LOG_DEBUG("Selected key %hhu", event.key);
+                ATE_LOG_DEBUG("Selected key %c", event.key);
 				SetState(State_SelectedLetter);
 			}
 			else if ((event.state == Device::IKeyPad::KEY_PRESSED) && (event.key == '0'))
@@ -126,7 +126,7 @@ namespace ATE::SM
 		case KeyPadSM::State_SelectedNumber:
 			if ((event.state == Device::IKeyPad::KEY_RELEASED) && event.key == number)
 			{
-                ATE_LOG_DEBUG("PlaySong %hhu%hhu", letter, number);
+                ATE_LOG_DEBUG("PlaySong %c%c", letter, number);
 				Notify(Event_PlaySong, letter, number);
 				SetState(State_Idle);
 			}

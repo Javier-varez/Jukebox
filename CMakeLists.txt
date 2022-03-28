@@ -14,7 +14,7 @@ include(FetchContent)
 FetchContent_Declare(
   postform
     GIT_REPOSITORY https://github.com/Javier-varez/Postform
-    GIT_TAG main)
+    GIT_TAG 0.5.0)
 
 FetchContent_MakeAvailable(postform)
 
