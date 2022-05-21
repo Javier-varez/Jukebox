@@ -33,6 +33,8 @@
 #include "FailSound.h"
 #include "OkSound.h"
 
+#include "LED/ws2812.h"
+
 namespace ATE::Jukebox
 {
     constexpr static char TASK_NAME[] = "JukeboxTask";
@@ -114,6 +116,21 @@ namespace ATE::Jukebox
 
         virtual void Init() override
         {
+
+            LED::Ws2812l<12> leds{GPIOA, GPIO_PIN_7};
+            ATE_LOG_DEBUG("Constructed leds");
+
+            for (uint32_t i = 0; i < 12; i++) {
+                leds.SetLed(i, LED::Ws2812l<12>::Color {
+                    .red = 0xff,
+                    .green = 0x00,
+                    .blue = 0x00,
+                });
+                ATE_LOG_DEBUG("Settings led %u", i);
+            }
+            leds.Flush();
+            ATE_LOG_DEBUG("Flushed leds");
+
             // Register USB Host MSC Callback Handler
             MassStorageDevice.Subscribe(
                     std::bind(

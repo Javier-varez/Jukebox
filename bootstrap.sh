@@ -2,7 +2,7 @@
 
 ARCH=$(uname -s)
 
-TOOLS_DIR=".tools"
+TOOLS_DIR="${PWD}/.tools"
 GCC_DIR="${TOOLS_DIR}/arm_none_eabi_gcc"
 DOWNLOAD_DIR="${TOOLS_DIR}/archives"
 
