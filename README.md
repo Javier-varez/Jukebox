@@ -13,9 +13,8 @@ source bootstrap.sh
 Then just build the software with:
 
 ```bash
-cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain.cmake -DCMAKE_SYSTEM_NAME=Generic -G Ninja
-cd build
-ninja
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain.cmake -DCMAKE_SYSTEM_NAME=Generic
+make -C build
 ```
 
 The output `elf` file will be under `build/Jukebox.elf`
@@ -23,5 +22,5 @@ The output `elf` file will be under `build/Jukebox.elf`
 Load the code to the target with: 
 
 ```bash
-ninja run
+make -C build run
 ```

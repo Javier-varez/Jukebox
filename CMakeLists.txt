@@ -175,6 +175,8 @@ set_target_properties(
     PROPERTIES
     LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/STM32F411VETX_FLASH.ld)
 
+set(CHIP_NAME STM32F411VETx)
+
 add_custom_target(
     run
     COMMAND postform_rtt --chip ${CHIP_NAME} ${CMAKE_BINARY_DIR}/${APPLICATION_NAME}
